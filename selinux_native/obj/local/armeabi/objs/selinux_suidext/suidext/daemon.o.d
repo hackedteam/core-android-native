@@ -103,7 +103,7 @@
  /home/diego/android-dev/core-native/selinux_native/jni/suidext/suidext.h \
  headers/log.h \
  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
- headers/shell_params.h headers/deobfuscate.h
+ headers/shell_params.h headers/deobfuscate.h headers/daemon.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/types.h:
 
@@ -316,3 +316,5 @@ headers/log.h:
 headers/shell_params.h:
 
 headers/deobfuscate.h:
+
+headers/daemon.h:

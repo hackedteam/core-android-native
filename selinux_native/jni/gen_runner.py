@@ -10,7 +10,7 @@ f2 = open(sys.argv[2], "w");
 
 w = f.read()
 
-f2.write("#define RUNNER_SIZE " + str(len(w)) + "\n\n")
+f2.write("#define RUNNER_SIZE " + str(len(w)) + "\n")
 f2.write("unsigned char runner[RUNNER_SIZE] = {\n")
 
 for i in range(0, len(w)):
@@ -23,5 +23,5 @@ for i in range(0, len(w)):
         f2.write("\n")
 
 
-f2.write("\n};\n")
+f2.write("\n};\n\n")
     

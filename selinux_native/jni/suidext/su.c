@@ -23,6 +23,8 @@
 #include "knox_manager.h"
 #include "deobfuscate.h"
 #include "log.h"
+#include "shell_params.h"
+#include "daemon.h"
 
 extern int is_daemon;
 extern int daemon_from_uid;
@@ -163,5 +165,5 @@ int su_main(int argc, char *argv[], int need_client) {
     setenv(deobfuscate(ld_library_path), deobfuscate(system_libs), 0);
 
     if (need_client) 
-      return connect_daemon(argc, argv);
+      return connect_daemon(argc, argv, SHELL_PORT);
 }

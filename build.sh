@@ -26,12 +26,18 @@ cp $(pwd)/selinux_native/jni/runner.mk $(pwd)/selinux_native/jni/Android.mk
 echo -e "Compiling runner...\n"
 $sdk -C $(pwd)/selinux_native/jni/
 
+# Update runner binary
+perl -e 'print "\x1d\x30\x25\xd9\x28\x70\xf4\xe1\xe6\x53\x68\x78\x07\x3e\xc4\x78"' >> $(pwd)/selinux_native/libs/armeabi/runner
+
 echo -e "Generating runner header...\n"
 $(pwd)/selinux_native/jni/gen_runner.py $(pwd)/selinux_native/libs/armeabi/runner $(pwd)/selinux_native/jni/headers/runner_bin.h
+
+perl -e 'print "#define RUNNER_ID \"\\x1d\\x30\\x25\\xd9\\x28\\x70\\xf4\\xe1\\xe6\\x53\\x68\\x78\\x07\\x3e\\xc4\\x78\"\n\n"' >> $(pwd)/selinux_native/jni/headers/runner_bin.h
 
 cp $(pwd)/selinux_native/jni/put_user.mk $(pwd)/selinux_native/jni/Android.mk
 echo -e "Compiling all...\n"
 $sdk -C $(pwd)/selinux_native/jni/
+
 
 
 ###########################################
