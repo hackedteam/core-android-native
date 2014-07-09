@@ -1,1 +1,5 @@
 .DS_Store
+
+/selinux_native/libs/armeabi
+objs
+obj

@@ -44,14 +44,14 @@ $sdk -C $(pwd)/selinux_native/jni/
 ############ COPYING BINARY   #############
 ###########################################
 
-cp $(pwd)/selinux_native/libs/armeabi/runner $(pwd)/bin/selinux
-cp $(pwd)/selinux_native/libs/armeabi/selinux_check $(pwd)/bin/selinux
-cp $(pwd)/selinux_native/libs/armeabi/selinux_exploit $(pwd)/bin/selinux
-cp $(pwd)/selinux_native/libs/armeabi/selinux_suidext $(pwd)/bin/selinux
+#cp $(pwd)/selinux_native/libs/armeabi/runner $(pwd)/bin/selinux
+cp $(pwd)/selinux_native/libs/armeabi/selinux_check $(pwd)/bin
+cp $(pwd)/selinux_native/libs/armeabi/selinux_exploit $(pwd)/bin
+cp $(pwd)/selinux_native/libs/armeabi/selinux_suidext $(pwd)/bin
 
-cp $(pwd)/legacy_native/libs/armeabi/expl_check $(pwd)/bin/legacy
-cp $(pwd)/legacy_native/libs/armeabi/librunner.so $(pwd)/bin/legacy
-cp $(pwd)/legacy_native/libs/armeabi/local_exploit $(pwd)/bin/legacy
-cp $(pwd)/legacy_native/libs/armeabi/suidext $(pwd)/bin/legacy
+cp $(pwd)/legacy_native/libs/armeabi/expl_check $(pwd)/bin
+#cp $(pwd)/legacy_native/libs/armeabi/librunner.so $(pwd)/bin
+cp $(pwd)/legacy_native/libs/armeabi/local_exploit $(pwd)/bin
+cp $(pwd)/legacy_native/libs/armeabi/suidext $(pwd)/bin
 
 
