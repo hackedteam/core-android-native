@@ -20,6 +20,17 @@ typedef struct _supported_device {
 
 static supported_device supported_devices[] = {
   {
+    .device_id = DEVICE_LG_G2_JDQ39B,
+    .device = "\x3e\x7b\x42\x96\x8f\xf5\x8e\xfa\xf2\xfc", // "LG-D802"
+    .build_id = "\x02\xd0\xd4\xc8\xc6\xf3\xd1\xdb\xc0", // "JDQ39B"
+
+    .prepare_kernel_cred_address = 0xc00c3458,
+    .commit_creds_address = 0xc00c2f4c,
+    .remap_pfn_range_address = 0xc01447c8,
+    .ptmx_fops_address = 0xc110e288,
+  },
+
+  {
     .device_id = DEVICE_C1505_11_3_A_0_47,
     .device = "\x9e\x37\xac\x23\xd1\xd5\xd2\xd5", // "C1505"
     .build_id = "\x9e\x37\xa2\xd1\xd1\xd0\xd3\xd0\x21\xd0\xd2\xd0\xd6\xd7", // "11.3.A.0.47"
