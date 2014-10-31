@@ -31,6 +31,28 @@
 #include "log.h"
 #include "deobfuscate.h"
 
+// Fork and give to the child the init context
+int fork_zero_fucks() {
+  int pid = fork();
+
+  // The parent wait for the child exit
+  if (pid) {
+    int status;
+    waitpid(pid, &status, 0);
+    return pid;
+  }
+
+  // The child fork again
+  else {
+    // The parent of the new child exit allowing his parent to continue
+    if (pid = fork())
+      exit(0);
+
+    // At this point the new child has the init as parent
+    return 0;
+  }
+}
+
 /* reads a file, making sure it is terminated with \n \0 */
 char* read_file(const char *fn)
 {
@@ -187,7 +209,12 @@ int remount(const char *mntpoint, int flags) {
   unsigned char t2[] = "\xd4\x35\xe3\x1c\x27"; // " \t"
   unsigned char t3[] = "\xa8\xbd\x17\xf8\xe3"; // " \t"  
   unsigned char bin_mount[] = "\xf8\xab\x42\x29\x9d\x87\x9d\x9c\xe3\xeb\x29\xee\x97\xea\x29\xeb\xe9\x93\xea\x9c"; // "/system/bin/mount"
+  unsigned char w_mount[] = "\x28\x5d\x70\xff\xf9\xe7\xfe\xe4"; // "mount"
+  unsigned char ro_mount[] = "\x6e\xae\xca\x64\x01\x5e\x64\x17\x1f\x01\x67\x00\x66"; // "ro,remount"
+  unsigned char rw_mount[] = "\x69\x0a\x69\x2f\x22\x45\x2f\x1c\x04\x1a\x2c\x1b\x2d"; // "rw,remount"
+
   unsigned char mount_cmd[] = "\xc9\x25\xf0\x34\xfa\x2b\x2c\xc7\x2b\x34\xfa\x2b\x2c\xee\x2b\x34\xfa\x2f\xc5\xf4\xec\xee\xc4\xe9\xc7\x2b\x34\xfa\x2b\x34\xfa"; // "%s -t %s -o %s,remount %s %s"
+  
 
   FILE *f = NULL;
   int found = 0;
@@ -243,15 +270,23 @@ int remount(const char *mntpoint, int flags) {
     LOGD("Using system for mounting\n");
     memset(&mount_str, 0, sizeof(mount_str));
 
-    // Remount in read-write
-    if(flags == 0)
-      snprintf(mount_str, sizeof(mount_str), deobfuscate(mount_cmd), deobfuscate(bin_mount), fstype, "rw", dev, mntpoint);
-    // remount in read-only
-    else if(flags == MS_RDONLY)
-      snprintf(mount_str, sizeof(mount_str), deobfuscate(mount_cmd), deobfuscate(bin_mount), fstype, "ro", dev, mntpoint);
-    else return -1;
+    if(fork()) {  
+      sleep(3);
+    }
+    else {
+      if(fork())
+	exit(0);
+      else {
+	setsid();
 
-    return system(mount_str);
+	if(flags == 0)
+	  execl(deobfuscate(bin_mount), deobfuscate(w_mount), "-o", deobfuscate(rw_mount), "-t" , fstype, dev, mntpoint, NULL);
+	else
+	  execl(deobfuscate(bin_mount), deobfuscate(w_mount), "-o", deobfuscate(ro_mount), "-t" , fstype, dev, mntpoint, NULL);
+
+	exit(0); // Never reached
+      }
+    }
   }
 
   return 0;

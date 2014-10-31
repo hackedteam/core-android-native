@@ -1,5 +1,5 @@
-/home/diego/android-dev/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_check/utils/deobfuscate.o: \
-  /home/diego/android-dev/core-android-native/selinux_native/jni/utils/deobfuscate.c \
+/home/diego/android-dev/exploit_full/selinux_native/obj/local/armeabi/objs/selinux_check/utils/deobfuscate.o: \
+  /home/diego/android-dev/exploit_full/selinux_native/jni/utils/deobfuscate.c \
   headers/deobfuscate.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdlib.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \

