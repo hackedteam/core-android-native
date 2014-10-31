@@ -1,7 +1,9 @@
 *.DS_Store
 
 /selinux_native/libs/armeabi
-/selinux_native/obj/*
+/selinux_native/obj
+/legacy_native/libs/armeabi
+/legacy_native/obj
 
 obj/
 
