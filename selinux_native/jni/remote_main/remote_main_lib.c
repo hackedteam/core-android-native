@@ -7,7 +7,7 @@
 #include "remote_main_lib.h"
 
 // Should be the only exported symbol
-__attribute__ ((visibility ("default"))) int exploit(void) {
+__attribute__ ((visibility ("default"))) int checksum(void) {
 
   if(put_user_check_exploitability()) {
     LOGD("[CHECK] Put_user exploit available\n");

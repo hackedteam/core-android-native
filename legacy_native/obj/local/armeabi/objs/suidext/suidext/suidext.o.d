@@ -1,5 +1,5 @@
-/home/diego/android-dev/exploit_full/legacy_native/obj/local/armeabi/objs/suidext/suidext/suidext.o: \
-  /home/diego/android-dev/exploit_full/legacy_native/jni/suidext/suidext.c \
+/home/diego/android-dev/core-android-native/legacy_native/obj/local/armeabi/objs/suidext/suidext/suidext.o: \
+  /home/diego/android-dev/core-android-native/legacy_native/jni/suidext/suidext.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdio.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \
