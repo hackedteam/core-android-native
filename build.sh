@@ -90,10 +90,10 @@ fi
 # Copy remote vector binaries
 cp $(pwd)/selinux_native/libs/armeabi/selinux_exploit $(pwd)/bin/remote
 
-##### BUILD E COPY SHARED LIBRARY #####
+##### BUILD E COPY SHARED LIBRARIES #####
 
 sleep 1
-echo -e "\n\n${yellow}${bold}BUILDING SHARED LIBRARY${normal}${NC}\n\n"
+echo -e "\n\n${yellow}${bold}BUILDING EXPLOITATION SHARED LIBRARY${normal}${NC}\n\n"
 sleep 1
 
 cp $(pwd)/selinux_native/jni/selinux_shared_lib.mk $(pwd)/selinux_native/jni/Android.mk
@@ -103,8 +103,24 @@ if [ $? != 0 ]; then
     error=1
 fi
 
+# Copy shared_lib vector binaries
+cp $(pwd)/selinux_native/libs/armeabi/libchecksum.so $(pwd)/bin/shared_lib/libexploit.so
+
+
+sleep 1
+echo -e "\n\n${yellow}${bold}BUILDING INSTALLER SHARED LIBRARY${normal}${NC}\n\n"
+sleep 1
+
+cp $(pwd)/selinux_native/jni/selinux_shared_lib_installer.mk $(pwd)/selinux_native/jni/Android.mk
+$sdk -B -C $(pwd)/selinux_native/jni/
+if [ $? != 0 ]; then
+    echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
+    error=1
+fi
+
 # Copy remote vector binaries
-cp $(pwd)/selinux_native/libs/armeabi/libselinux_exploit.so $(pwd)/bin/shared_lib
+cp $(pwd)/selinux_native/libs/armeabi/libchecksum.so $(pwd)/bin/shared_lib/libinstaller.so
+
 
 ##### BUILD E COPY LOCAL VECTOR #####
 
