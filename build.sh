@@ -37,6 +37,11 @@ if [ $? != 0 ]; then
     error=1
 fi
 
+
+cp $(pwd)/legacy_native/libs/armeabi/expl_check $(pwd)/bin/local
+cp $(pwd)/legacy_native/libs/armeabi/local_exploit $(pwd)/bin/local
+cp $(pwd)/legacy_native/libs/armeabi/suidext $(pwd)/bin/local
+
 ###########################################
 ############ BUILDING SELINUX #############
 ###########################################
@@ -96,6 +101,8 @@ sleep 1
 echo -e "\n\n${yellow}${bold}BUILDING EXPLOITATION SHARED LIBRARY${normal}${NC}\n\n"
 sleep 1
 
+$(pwd)/selinux_native/jni/gen_bin.py $(pwd)/bin/local/local_exploit $(pwd)/selinux_native/jni/headers/bin_legacyexp.h bin_legacy_get_root
+
 cp $(pwd)/selinux_native/jni/selinux_shared_lib.mk $(pwd)/selinux_native/jni/Android.mk
 $sdk -B -C $(pwd)/selinux_native/jni/
 if [ $? != 0 ]; then
@@ -141,9 +148,6 @@ cp $(pwd)/selinux_native/libs/armeabi/selinux_suidext $(pwd)/bin/local
 cp $(pwd)/selinux_native/libs/armeabi/selinux4_exploit $(pwd)/bin/local
 cp $(pwd)/selinux_native/libs/armeabi/selinux4_check $(pwd)/bin/local
 
-cp $(pwd)/legacy_native/libs/armeabi/expl_check $(pwd)/bin/local
-cp $(pwd)/legacy_native/libs/armeabi/local_exploit $(pwd)/bin/local
-cp $(pwd)/legacy_native/libs/armeabi/suidext $(pwd)/bin/local
 
 
 if [ $error == 0 ]; then

