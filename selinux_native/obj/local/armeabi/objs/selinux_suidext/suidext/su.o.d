@@ -78,7 +78,8 @@
   /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/su.h \
   headers/utils.h \
   /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h \
-  headers/knox_manager.h headers/deobfuscate.h headers/log.h \
+  headers/knox_manager.h headers/xperia_ric_manager.h \
+  headers/deobfuscate.h headers/log.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
   headers/shell_params.h headers/daemon.h
 
@@ -239,6 +240,8 @@ headers/utils.h:
 /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h:
 
 headers/knox_manager.h:
+
+headers/xperia_ric_manager.h:
 
 headers/deobfuscate.h:
 

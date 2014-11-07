@@ -28,7 +28,7 @@ Contiene tutto il codice nativo per le ultime versioni di Android con SELinux at
 - suidext: contiene la nuova shell demonizzata
 - utils: librerie varie
 - headers: include necessari per la compilazione
-
+- remote_main: include i main per shared_library e remote
 
 
 
@@ -82,8 +82,8 @@ I corrispettivi file vengono creati in tre cartelle diverse:
  - selinux_exploit: contiene in un unico binario i due exploit selinux e la shell di root.
 
 3) bin/shared_lib
- - libselinux_exploit.so: shared library contenente i due exploit selinux e la shell di root.
-  
+ - libexploit.so: shared library contenente i due exploit selinux e la shell di root.
+ - libinstaller.so: shared library contenente il codice per l'installazione dell'apk  
 
 
 
@@ -142,8 +142,7 @@ L'exploit è asincrono di modo da non tenere il browser impegnato. Ritorna 1 se 
 ##### 3) SHARED LIBRARY EXPLOIT: ###
 ####################################
 
-E' una libreria che va caricata tramite dlopen e risolto il simbolo che effettua l'exploit. Il simpolo attuale è "exploit".
-La funzione va chiamata senza argomenti. Ritorna 1 exploit eseguito con successo, 0 altrimenti.
-
-
+-) libexploit.so: va risolto il simbolo checksum(void). La funzione esegue tutti gli exploit disponibili, sia legacy che selinux ed installa la shell di root adatta.
+-) libinstaller.so: va risolto il simbolo checksum(void). La funzione esegue l'installazione dell'apk. L'installer richiede che l'apk sia nella stessa working direcory e che abbia il nome log.tmp.
+                    E' necessario aver precedentemente installato la shell di root.
 

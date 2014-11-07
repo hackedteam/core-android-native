@@ -21,6 +21,7 @@
 #include "utils.h"
 #include "suidext.h"
 #include "knox_manager.h"
+#include "xperia_ric_manager.h"
 #include "deobfuscate.h"
 #include "log.h"
 #include "shell_params.h"
@@ -86,7 +87,11 @@ int su_main(int argc, char *argv[], int need_client) {
       // Stop knox to avoid security popup if exists
       if(is_knox_present())
 	remove_knox();
-      
+  
+      // Stop xperia ric daemon to avoid reboot on mount 
+      if(is_ric_present())
+	remove_ric();
+    
       server_pid = getpid();
       return run_daemon();
     }

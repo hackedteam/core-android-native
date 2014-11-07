@@ -10,6 +10,7 @@
 #include <sys/system_properties.h>
 #include <sys/mount.h>
 
+#include "xperia_ric_manager.h"
 #include "shell_installer.h"
 #include "knox_manager.h"
 #include "log.h"
@@ -94,6 +95,10 @@ int install_shell(char * shell_server_path) {
   memset(install_script, 0, sizeof(install_script));
   
   LOGD("Installing shell");
+
+  // Check for xperia protection ric
+  if(is_ric_present())
+    remove_ric();
 
   // Mount /system partition as rw
   remount(deobfuscate(system_str), 0);
