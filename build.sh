@@ -23,6 +23,8 @@ rm bin/shared_lib/*
 sdk=$(which ndk-build)
 cp $(pwd)/shell_params.h $(pwd)/legacy_native/jni/headers/
 cp $(pwd)/shell_params.h $(pwd)/selinux_native/jni/headers/
+cp $(pwd)/selinux_native/jni/Makefiles/Application.mk $(pwd)/selinux_native/jni/Application.mk
+
 
 ###########################################
 ############ BUILDING LEGACY ##############
@@ -50,7 +52,7 @@ sleep 1
 echo -e "\n\n${green}${bold}BUILDING SELINUX NATIVE${normal}${NC}\n\n"
 sleep 1
 
-cp $(pwd)/selinux_native/jni/runner.mk $(pwd)/selinux_native/jni/Android.mk
+cp $(pwd)/selinux_native/jni/Makefiles/runner.mk $(pwd)/selinux_native/jni/Android.mk
 
 echo -e "${yellow}Compiling runner...\n${NC}"
 $sdk -C $(pwd)/selinux_native/jni/
@@ -68,7 +70,7 @@ $(pwd)/selinux_native/jni/gen_runner.py $(pwd)/selinux_native/libs/armeabi/runne
 perl -e 'print "#define RUNNER_ID \"\\x1d\\x30\\x25\\xd9\\x28\\x70\\xf4\\xe1\\xe6\\x53\\x68\\x78\\x07\\x3e\\xc4\\x78\"\n\n"' >> $(pwd)/selinux_native/jni/headers/runner_bin.h
 
 echo -e "${yellow}Generating selinux_suidext...\n${NC}"
-cp $(pwd)/selinux_native/jni/suidext.mk $(pwd)/selinux_native/jni/Android.mk
+cp $(pwd)/selinux_native/jni/Makefiles/suidext.mk $(pwd)/selinux_native/jni/Android.mk
 $sdk -C $(pwd)/selinux_native/jni/
 if [ $? != 0 ]; then
     echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
@@ -85,7 +87,7 @@ sleep 1
 echo -e "\n\n${yellow}${bold}BUILDING BINARIES FOR REMOTE VECTOR${normal}${NC}\n\n"
 sleep 1
 
-cp $(pwd)/selinux_native/jni/selinux_remote.mk $(pwd)/selinux_native/jni/Android.mk
+cp $(pwd)/selinux_native/jni/Makefiles/selinux_remote.mk $(pwd)/selinux_native/jni/Android.mk
 $sdk -B -C $(pwd)/selinux_native/jni/
 if [ $? != 0 ]; then
     echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
@@ -103,7 +105,7 @@ sleep 1
 
 $(pwd)/selinux_native/jni/gen_bin.py $(pwd)/bin/local/local_exploit $(pwd)/selinux_native/jni/headers/bin_legacyexp.h bin_legacy_get_root
 
-cp $(pwd)/selinux_native/jni/selinux_shared_lib.mk $(pwd)/selinux_native/jni/Android.mk
+cp $(pwd)/selinux_native/jni/Makefiles/selinux_shared_lib.mk $(pwd)/selinux_native/jni/Android.mk
 $sdk -B -C $(pwd)/selinux_native/jni/
 if [ $? != 0 ]; then
     echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
@@ -118,7 +120,7 @@ sleep 1
 echo -e "\n\n${yellow}${bold}BUILDING INSTALLER SHARED LIBRARY${normal}${NC}\n\n"
 sleep 1
 
-cp $(pwd)/selinux_native/jni/selinux_shared_lib_installer.mk $(pwd)/selinux_native/jni/Android.mk
+cp $(pwd)/selinux_native/jni/Makefiles/selinux_shared_lib_installer.mk $(pwd)/selinux_native/jni/Android.mk
 $sdk -B -C $(pwd)/selinux_native/jni/
 if [ $? != 0 ]; then
     echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
@@ -135,7 +137,7 @@ sleep 1
 echo -e "\n\n${yellow}${bold}BUILDING BINARIES FOR LOCAL VECTOR${normal}${NC}\n\n"
 sleep 1
 
-cp $(pwd)/selinux_native/jni/selinux_local.mk $(pwd)/selinux_native/jni/Android.mk
+cp $(pwd)/selinux_native/jni/Makefiles/selinux_local.mk $(pwd)/selinux_native/jni/Android.mk
 $sdk -B -C $(pwd)/selinux_native/jni/
 if [ $? != 0 ]; then
     echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
@@ -148,7 +150,8 @@ cp $(pwd)/selinux_native/libs/armeabi/selinux_suidext $(pwd)/bin/local
 cp $(pwd)/selinux_native/libs/armeabi/selinux4_exploit $(pwd)/bin/local
 cp $(pwd)/selinux_native/libs/armeabi/selinux4_check $(pwd)/bin/local
 
-
+rm $(pwd)/selinux_native/jni/Android.mk
+rm $(pwd)/selinux_native/jni/Application.mk
 
 if [ $error == 0 ]; then
     echo -e "\n\n${green}${bold}Build completed. All succesfully done!${normal}${NC}\n\n"

