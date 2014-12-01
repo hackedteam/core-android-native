@@ -71,6 +71,7 @@ int kill_debuggerd(void) {
 	  // Stop it
 	  kill(pid, SIGKILL);
 	  ret = 1;
+	  break;
 	}	
       }
     }
