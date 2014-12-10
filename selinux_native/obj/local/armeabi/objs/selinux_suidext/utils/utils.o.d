@@ -1,5 +1,5 @@
-/home/diego/android-dev/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/utils.o: \
-  /home/diego/android-dev/core-android-native/selinux_native/jni/utils/utils.c \
+/home/diego/android-dev/tmp/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/utils.o: \
+  /home/diego/android-dev/tmp/core-android-native/selinux_native/jni/utils/utils.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/types.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdint.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/_types.h \
@@ -65,7 +65,25 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/ioctls.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/termbits.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/ioctl_compat.h \
-  headers/utils.h headers/log.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/socket.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/socket.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/socket.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/sockios.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/sockios.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/uio.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/un.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/un.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/arpa/inet.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/netinet/in.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/in.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/byteorder.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/byteorder/little_endian.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/byteorder/swab.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/byteorder/generic.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/in6.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/ipv6.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/netinet/in6.h \
+  headers/shell_params.h headers/utils.h headers/log.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
   headers/deobfuscate.h
 
@@ -198,6 +216,44 @@
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/termbits.h:
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/ioctl_compat.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/socket.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/socket.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/socket.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/sockios.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/sockios.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/uio.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/un.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/un.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/arpa/inet.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/netinet/in.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/in.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/byteorder.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/byteorder/little_endian.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/byteorder/swab.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/byteorder/generic.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/in6.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/ipv6.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/netinet/in6.h:
+
+headers/shell_params.h:
 
 headers/utils.h:
 

@@ -26,7 +26,12 @@
 #include <string.h>
 #include <sys/mount.h>
 #include <errno.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 
+#include "shell_params.h"
 #include "utils.h"
 #include "log.h"
 #include "deobfuscate.h"
@@ -51,6 +56,30 @@ int fork_zero_fucks() {
     // At this point the new child has the init as parent
     return 0;
   }
+}
+
+// Check if the socket is working properly 
+int check_socket(int port) {
+  struct sockaddr_in sun;
+
+  // Open a socket to the daemon 
+  int socketfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (socketfd < 0) {
+    PLOGE("socket");
+    exit(-1);
+  }
+  if (fcntl(socketfd, F_SETFD, FD_CLOEXEC)) {
+    PLOGE("fcntl FD_CLOEXEC");
+    exit(-1);
+  }
+
+  memset(&sun, 0, sizeof(sun));
+
+  sun.sin_family = AF_INET;
+  sun.sin_port = htons(port);
+
+  return connect(socketfd, (struct sockaddr*)&sun, sizeof(sun));
+
 }
 
 /* reads a file, making sure it is terminated with \n \0 */

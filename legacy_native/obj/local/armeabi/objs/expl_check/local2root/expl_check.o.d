@@ -1,5 +1,5 @@
-/home/diego/android-dev/core-android-native/legacy_native/obj/local/armeabi/objs/expl_check/local2root/expl_check.o: \
-  /home/diego/android-dev/core-android-native/legacy_native/jni/local2root/expl_check.c \
+/home/diego/android-dev/tmp/core-android-native/legacy_native/obj/local/armeabi/objs/expl_check/local2root/expl_check.o: \
+  /home/diego/android-dev/tmp/core-android-native/legacy_native/jni/local2root/expl_check.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdio.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \

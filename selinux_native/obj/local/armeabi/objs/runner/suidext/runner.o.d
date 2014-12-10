@@ -1,5 +1,5 @@
-/home/diego/android-dev/core-android-native/selinux_native/obj/local/armeabi/objs/runner/suidext/runner.o: \
-  /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/runner.c \
+/home/diego/android-dev/tmp/core-android-native/selinux_native/obj/local/armeabi/objs/runner/suidext/runner.o: \
+  /home/diego/android-dev/tmp/core-android-native/selinux_native/jni/suidext/runner.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdio.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \
@@ -54,7 +54,8 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/errno.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm-generic/errno.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm-generic/errno-base.h \
-  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
+  headers/utils.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdio.h:
 
@@ -171,3 +172,5 @@ headers/log.h:
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm-generic/errno-base.h:
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h:
+
+headers/utils.h:
