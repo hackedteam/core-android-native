@@ -1,5 +1,5 @@
-/home/diego/android-dev/tmp/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_check/utils/log.o: \
-  /home/diego/android-dev/tmp/core-android-native/selinux_native/jni/utils/log.c \
+/home/diego/android-dev/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_check/utils/log.o: \
+  /home/diego/android-dev/core-android-native/selinux_native/jni/utils/log.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/types.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdint.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/_types.h \

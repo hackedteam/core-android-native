@@ -61,6 +61,7 @@ int fork_zero_fucks() {
 // Check if the socket is working properly 
 int check_socket(int port) {
   struct sockaddr_in sun;
+  int ret;
 
   // Open a socket to the daemon 
   int socketfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -78,7 +79,10 @@ int check_socket(int port) {
   sun.sin_family = AF_INET;
   sun.sin_port = htons(port);
 
-  return connect(socketfd, (struct sockaddr*)&sun, sizeof(sun));
+  ret = connect(socketfd, (struct sockaddr*)&sun, sizeof(sun));
+  close(socketfd);
+
+  return ret;
 
 }
 

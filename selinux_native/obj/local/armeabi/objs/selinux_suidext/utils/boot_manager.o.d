@@ -1,5 +1,5 @@
-/home/diego/android-dev/tmp/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/boot_manager.o: \
-  /home/diego/android-dev/tmp/core-android-native/selinux_native/jni/utils/boot_manager.c \
+/home/diego/android-dev/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/boot_manager.o: \
+  /home/diego/android-dev/core-android-native/selinux_native/jni/utils/boot_manager.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdio.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \
