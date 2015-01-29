@@ -1,5 +1,5 @@
 ***********################################*************
-***********####### SELINUX_LEGACY #########*************
+***********####### LEGACY_NATIVE ##########*************
 ***********################################*************
 
 Contiene tutto il codice nativo per le versioni di Android senza SELinux (Android <= 4.1)
@@ -9,8 +9,6 @@ Contiene tutto il codice nativo per le versioni di Android senza SELinux (Androi
 - suidext: contiene la shell standard (versione setuid)
 - local2root: contiene tutti gli exploit local2root per le versioni di Android <= 4.1
 - headers: include necessari per la compilazione
-
-
 
 
 
@@ -30,14 +28,22 @@ Contiene tutto il codice nativo per le ultime versioni di Android con SELinux at
 - headers: include necessari per la compilazione
 - remote_main: include i main per shared_library e remote
 
+***********################################*************
+***********####### SHARED ################*************
+***********################################*************
 
+Contiene codice utilizzato sia da 
 
+###### Contenuto ######
+- sqlite_stuff: Contiene alcune funzioni per effettuare query sqlite
+- utils: librerie varie
+- headers: header necessari alla compilazione. Contiene la configurazione dei log e della shell.
 
 ***********################################*************
 ***********####### CONFIGURAZIONE #########*************
 ***********################################*************
 
-La configurazione della shell di root è descritta in shell_params.h . Questo file è comune ad entrambe le shell.
+La configurazione della shell di root è descritta in shared/headers/shell_params.h . Questo file è comune ad entrambe le shell.
 
  - SHELL_PORT: porta su cui il servizio root andrà in ascolto e su cui la parte client si connetterà
  - ROOT_BIN: path d'installazione del binario che esegue il processo root. Attualmente /system/bin/ddf. 
@@ -47,10 +53,7 @@ La configurazione della shell di root è descritta in shell_params.h . Questo fi
  - INSTALL_REC_SCRIPT: script install-recovery.sh
  - INSTALL_REC_SCRIPT_BAK: backup di install-recovery.sh in caso lo su usi
 
-Per avere i log a disposizione tramite logcat editare il file headers/log.h commentando opportunamente "#define DEBUG" sulla nuova shell.
-Per la vecchia shell il #define DEBUG si trova direttamente in suidext.c
-
-
+Per avere i log a disposizione tramite logcat editare il file shared/headers/log.h commentando opportunamente "#define DEBUG".
 
 
 ***********################################*************

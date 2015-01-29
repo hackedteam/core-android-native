@@ -47,15 +47,15 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/endian.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/endian.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/machine/endian.h \
-  headers/shell_params.h headers/deobfuscate.h headers/ps.h \
-  headers/runner_bin.h headers/log.h \
+  ../../shared/headers/shell_params.h ../../shared/headers/deobfuscate.h \
+  headers/ps.h headers/runner_bin.h ../../shared/headers/log.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/errno.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/errno.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm/errno.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm-generic/errno.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm-generic/errno-base.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
-  headers/utils.h
+  ../../shared/headers/utils.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdio.h:
 
@@ -151,15 +151,15 @@
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/machine/endian.h:
 
-headers/shell_params.h:
+../../shared/headers/shell_params.h:
 
-headers/deobfuscate.h:
+../../shared/headers/deobfuscate.h:
 
 headers/ps.h:
 
 headers/runner_bin.h:
 
-headers/log.h:
+../../shared/headers/log.h:
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/errno.h:
 
@@ -173,4 +173,4 @@ headers/log.h:
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h:
 
-headers/utils.h:
+../../shared/headers/utils.h:

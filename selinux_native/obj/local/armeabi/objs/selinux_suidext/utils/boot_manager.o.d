@@ -102,8 +102,9 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/reboot.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/fb.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/kd.h \
-  headers/log.h headers/shell_params.h headers/deobfuscate.h \
-  headers/old_shell.h headers/runner_bin.h \
+  ../../shared/headers/log.h ../../shared/headers/shell_params.h \
+  ../../shared/headers/deobfuscate.h headers/old_shell.h \
+  headers/runner_bin.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/util.h \
   headers/boot_manager.h
 
@@ -311,11 +312,11 @@
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/kd.h:
 
-headers/log.h:
+../../shared/headers/log.h:
 
-headers/shell_params.h:
+../../shared/headers/shell_params.h:
 
-headers/deobfuscate.h:
+../../shared/headers/deobfuscate.h:
 
 headers/old_shell.h:
 

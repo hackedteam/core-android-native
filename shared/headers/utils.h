@@ -17,6 +17,8 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+#include <stdio.h>
+
 #ifndef PROPERTY_VALUE_MAX
 #define PROPERTY_VALUE_MAX  92
 #endif
@@ -35,6 +37,8 @@ extern int fcopy(FILE *f1, FILE *f2);
 extern int remount(const char *mntpoint, int flags);
 
 extern int append_content(const char *content, const char *file);
+
+extern int get_package_uid(char *package);
 
 // for when you give zero fucks about the state of the child process.
 // this version of fork understands you don't care about the child.

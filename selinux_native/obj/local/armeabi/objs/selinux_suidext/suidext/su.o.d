@@ -76,12 +76,12 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/endian.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/machine/endian.h \
   /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/su.h \
-  headers/utils.h \
+  ../../shared/headers/utils.h \
   /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h \
   headers/knox_manager.h headers/xperia_ric_manager.h \
-  headers/deobfuscate.h headers/log.h \
+  ../../shared/headers/deobfuscate.h ../../shared/headers/log.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
-  headers/shell_params.h headers/daemon.h
+  ../../shared/headers/shell_params.h headers/daemon.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/types.h:
 
@@ -235,7 +235,7 @@
 
 /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/su.h:
 
-headers/utils.h:
+../../shared/headers/utils.h:
 
 /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h:
 
@@ -243,12 +243,12 @@ headers/knox_manager.h:
 
 headers/xperia_ric_manager.h:
 
-headers/deobfuscate.h:
+../../shared/headers/deobfuscate.h:
 
-headers/log.h:
+../../shared/headers/log.h:
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h:
 
-headers/shell_params.h:
+../../shared/headers/shell_params.h:
 
 headers/daemon.h:

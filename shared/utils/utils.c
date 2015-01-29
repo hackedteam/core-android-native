@@ -325,3 +325,29 @@ int remount(const char *mntpoint, int flags) {
   return 0;
     
 }
+
+
+int get_package_uid(char *package) {
+  static unsigned char pack_str[] = "\x01\xaa\xb2\x72\xa5\xa0\xb5\xa0\x72\xb6\x88\xb6\xb5\xa4\xbc\x72\xb1\xa0\xa6\xbe\xa0\xba\xa4\xb6\x73\x89\xbc\xbd"; // "/data/system/packages.xml"
+  static unsigned char uid_str[] = "\xf2\x7a\x8e\x7b\x81\x6b\x80\x4f\x6a"; // "userId"
+  int uid = 0;
+
+  FILE *file = fopen(deobfuscate(pack_str), "r");
+  if(file != NULL) {
+    char line [ 2048 ];
+    while(fgets(line, sizeof(line), file ) != NULL ) {
+      if(strstr(line, package) != NULL) {
+	char *s = strstr(line, deobfuscate(uid_str));
+	strtok(s, "\"");
+	uid = atoi(strtok(NULL, "\""));
+      }	    
+    }
+    fclose(file);
+  }
+  else {
+    return 0;
+  }
+
+  return uid;
+}
+

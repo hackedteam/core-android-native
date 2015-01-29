@@ -102,7 +102,9 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/reboot.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/fb.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/kd.h \
-  headers/shell_params.h
+  ../../shared/headers/utils.h ../../shared/headers/log.h \
+  ../../shared/headers/deobfuscate.h ../../shared/headers/shell_params.h \
+  ../../shared/headers/sqlite3_manager.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdio.h:
 
@@ -308,4 +310,12 @@
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/kd.h:
 
-headers/shell_params.h:
+../../shared/headers/utils.h:
+
+../../shared/headers/log.h:
+
+../../shared/headers/deobfuscate.h:
+
+../../shared/headers/shell_params.h:
+
+../../shared/headers/sqlite3_manager.h:

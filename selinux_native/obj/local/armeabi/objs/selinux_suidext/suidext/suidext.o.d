@@ -103,9 +103,10 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/fb.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/kd.h \
   /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h \
-  headers/log.h headers/shell_params.h headers/deobfuscate.h \
-  headers/old_shell.h headers/utils.h headers/boot_manager.h \
-  headers/ps.h
+  ../../shared/headers/log.h ../../shared/headers/shell_params.h \
+  ../../shared/headers/deobfuscate.h headers/old_shell.h \
+  ../../shared/headers/utils.h headers/boot_manager.h headers/ps.h \
+  ../../shared/headers/sqlite3_manager.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdio.h:
 
@@ -313,16 +314,18 @@
 
 /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h:
 
-headers/log.h:
+../../shared/headers/log.h:
 
-headers/shell_params.h:
+../../shared/headers/shell_params.h:
 
-headers/deobfuscate.h:
+../../shared/headers/deobfuscate.h:
 
 headers/old_shell.h:
 
-headers/utils.h:
+../../shared/headers/utils.h:
 
 headers/boot_manager.h:
 
 headers/ps.h:
+
+../../shared/headers/sqlite3_manager.h:

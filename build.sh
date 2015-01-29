@@ -21,8 +21,6 @@ rm bin/shared_lib/*
 ################################
 
 sdk=$(which ndk-build)
-cp $(pwd)/shell_params.h $(pwd)/legacy_native/jni/headers/
-cp $(pwd)/shell_params.h $(pwd)/selinux_native/jni/headers/
 cp $(pwd)/selinux_native/jni/Makefiles/Application.mk $(pwd)/selinux_native/jni/Application.mk
 
 
@@ -52,6 +50,7 @@ sleep 1
 echo -e "\n\n${green}${bold}BUILDING SELINUX NATIVE${normal}${NC}\n\n"
 sleep 1
 
+# Build runner
 cp $(pwd)/selinux_native/jni/Makefiles/runner.mk $(pwd)/selinux_native/jni/Android.mk
 
 echo -e "${yellow}Compiling runner...\n${NC}"

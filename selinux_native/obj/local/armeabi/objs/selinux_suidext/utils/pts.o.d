@@ -63,7 +63,7 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/pthread.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/time.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sched.h \
-  headers/deobfuscate.h headers/pts.h
+  ../../shared/headers/deobfuscate.h headers/pts.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdlib.h:
 
@@ -191,6 +191,6 @@
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sched.h:
 
-headers/deobfuscate.h:
+../../shared/headers/deobfuscate.h:
 
 headers/pts.h:

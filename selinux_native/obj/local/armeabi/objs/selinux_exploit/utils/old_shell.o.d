@@ -31,9 +31,9 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/endian.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/endian.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/machine/endian.h \
-  headers/log.h \
+  ../../shared/headers/log.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
-  headers/deobfuscate.h headers/shell_params.h
+  ../../shared/headers/deobfuscate.h ../../shared/headers/shell_params.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/errno.h:
 
@@ -97,10 +97,10 @@
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/machine/endian.h:
 
-headers/log.h:
+../../shared/headers/log.h:
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h:
 
-headers/deobfuscate.h:
+../../shared/headers/deobfuscate.h:
 
-headers/shell_params.h:
+../../shared/headers/shell_params.h:

