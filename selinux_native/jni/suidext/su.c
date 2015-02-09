@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     strncat(path, bin_name, sizeof(path));
 
     argv[0] = path;
-  }
+    }
 
   return su_main(argc, argv, 1);
 
@@ -83,7 +83,7 @@ int su_main(int argc, char *argv[], int need_client) {
 
     // start up in daemon mode if prompted
     if (argc == 2 && strcmp(argv[1], "--daemon") == 0) {
-
+    //if(1) {
       // Stop knox to avoid security popup if exists
       if(is_knox_present())
 	remove_knox();

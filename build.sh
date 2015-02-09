@@ -15,10 +15,11 @@ rm -rf selinux_native/obj
 rm legacy_native/libs/armeabi/*
 rm selinux_native/libs/armeabi/*
 
-rm bin/local/*
+rm -rf bin/local/*
 rm bin/remote/*
 rm bin/shared_lib/*
 ################################
+mkdir bin/local/Android5
 
 sdk=$(which ndk-build)
 cp $(pwd)/selinux_native/jni/Makefiles/Application.mk $(pwd)/selinux_native/jni/Application.mk
@@ -79,6 +80,8 @@ fi
 
 $(pwd)/selinux_native/jni/gen_bin.py $(pwd)/selinux_native/libs/armeabi/selinux_suidext $(pwd)/selinux_native/jni/headers/bin_suidext.h binsuidext
 $(pwd)/selinux_native/jni/gen_bin.py $(pwd)/legacy_native/libs/armeabi/suidext $(pwd)/selinux_native/jni/headers/bin_oldsuidext.h binoldsuidext
+
+
 
 ##### BUILD E COPY REMOTE VECTOR #####
 
@@ -149,8 +152,51 @@ cp $(pwd)/selinux_native/libs/armeabi/selinux_suidext $(pwd)/bin/local
 cp $(pwd)/selinux_native/libs/armeabi/selinux4_exploit $(pwd)/bin/local
 cp $(pwd)/selinux_native/libs/armeabi/selinux4_check $(pwd)/bin/local
 
+
+###################################################
+############# ANDROID 5 ###########################
+###################################################
+sleep 1
+echo -e "\n\n${yellow}${bold}BUILDING SELINUX NATIVE FOR ANDROID 5${normal}${NC}\n\n"
+sleep 1
+
+
+# Build runner for Android 5
+cp $(pwd)/selinux_native/jni/Makefiles/runner5.mk $(pwd)/selinux_native/jni/Android.mk
+
+echo -e "${yellow}Compiling runner...\n${NC}"
+$sdk -C $(pwd)/selinux_native/jni/
+if [ $? != 0 ]; then
+    echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
+    error=1
+fi
+
+
+
+# Update runner binary
+perl -e 'print "\x1d\x30\x25\xd9\x28\x70\xf4\xe1\xe6\x53\x68\x78\x07\x3e\xc4\x78"' >> $(pwd)/selinux_native/libs/armeabi/runner
+
+echo -e "${yellow}Generating runner header...\n${NC}"
+$(pwd)/selinux_native/jni/gen_runner.py $(pwd)/selinux_native/libs/armeabi/runner $(pwd)/selinux_native/jni/headers/runner_bin.h
+
+perl -e 'print "#define RUNNER_ID \"\\x1d\\x30\\x25\\xd9\\x28\\x70\\xf4\\xe1\\xe6\\x53\\x68\\x78\\x07\\x3e\\xc4\\x78\"\n\n"' >> $(pwd)/selinux_native/jni/headers/runner_bin.h
+
+echo -e "${yellow}Generating selinux_suidext...\n${NC}"
+cp $(pwd)/selinux_native/jni/Makefiles/suidext5.mk $(pwd)/selinux_native/jni/Android.mk
+$sdk -C $(pwd)/selinux_native/jni/
+if [ $? != 0 ]; then
+    echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
+    error=1
+fi
+
+
+cp $(pwd)/selinux_native/libs/armeabi/selinux_suidext $(pwd)/bin/local/Android5/
+
+
 rm $(pwd)/selinux_native/jni/Android.mk
 rm $(pwd)/selinux_native/jni/Application.mk
+
+
 
 if [ $error == 0 ]; then
     echo -e "\n\n${green}${bold}Build completed. All succesfully done!${normal}${NC}\n\n"

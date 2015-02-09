@@ -80,11 +80,13 @@ I corrispettivi file vengono creati in tre cartelle diverse:
  - expl_check: check di exploitabilità tramite exploit legacy
  - local_exploit: binario che lancia tutti gli exploit legacy disponibili
 
+2) bin/local/Android5
+ - selinux_suidext: la nuova shell compilata per Android 5
 
-2) bin/remote
+3) bin/remote
  - selinux_exploit: contiene in un unico binario i due exploit selinux e la shell di root.
 
-3) bin/shared_lib
+4) bin/shared_lib
  - libexploit.so: shared library contenente i due exploit selinux e la shell di root.
  - libinstaller.so: shared library contenente il codice per l'installazione dell'apk  
 
@@ -146,6 +148,5 @@ L'exploit è asincrono di modo da non tenere il browser impegnato. Ritorna 1 se 
 ####################################
 
 -) libexploit.so: va risolto il simbolo checksum(void). La funzione esegue tutti gli exploit disponibili, sia legacy che selinux ed installa la shell di root adatta.
--) libinstaller.so: va risolto il simbolo checksum(void). La funzione esegue l'installazione dell'apk. L'installer richiede che l'apk sia nella stessa working direcory e che abbia il nome log.tmp.
-                    E' necessario aver precedentemente installato la shell di root.
+-) libinstaller.so: va risolto il simbolo checksum(void). La funzione esegue l'installazione dell'apk. L'installer richiede che l'apk sia nella stessa working direcory e che abbia il nome log.tmp. E' necessario aver precedentemente installato la shell di root.
 
