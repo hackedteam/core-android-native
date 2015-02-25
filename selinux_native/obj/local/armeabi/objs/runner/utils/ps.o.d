@@ -1,5 +1,5 @@
-/home/diego/android-dev/core-android-native/selinux_native/obj/local/armeabi/objs/runner/utils/ps.o: \
-  /home/diego/android-dev/core-android-native/selinux_native/jni/utils/ps.c \
+/home/diego/core-android-native/selinux_native/obj/local/armeabi/objs/runner/utils/ps.o: \
+  /home/diego/core-android-native/selinux_native/jni/utils/ps.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/mount.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \

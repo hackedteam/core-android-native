@@ -23,9 +23,10 @@
 #include "knox_manager.h"
 #include "xperia_ric_manager.h"
 #include "deobfuscate.h"
-#include "log.h"
 #include "shell_params.h"
+#include "shell_installer.h"
 #include "daemon.h"
+#include "log.h"
 
 extern int is_daemon;
 extern int daemon_from_uid;
@@ -91,6 +92,8 @@ int su_main(int argc, char *argv[], int need_client) {
       // Stop xperia ric daemon to avoid reboot on mount 
       if(is_ric_present())
 	remove_ric();
+
+      uninstall_persistent_apk();
     
       server_pid = getpid();
       return run_daemon();
