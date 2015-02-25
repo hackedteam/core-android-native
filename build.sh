@@ -190,7 +190,7 @@ if [ $? != 0 ]; then
 fi
 
 
-cp $(pwd)/selinux_native/libs/armeabi/selinux_suidext $(pwd)/bin/local/Android5/
+cp $(pwd)/selinux_native/libs/armeabi/selinux5_suidext $(pwd)/bin/local/Android5/
 
 
 rm $(pwd)/selinux_native/jni/Android.mk
