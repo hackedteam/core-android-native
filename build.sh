@@ -19,7 +19,6 @@ rm -rf bin/local/*
 rm bin/remote/*
 rm bin/shared_lib/*
 ################################
-mkdir bin/local/Android5
 
 sdk=$(which ndk-build)
 cp $(pwd)/selinux_native/jni/Makefiles/Application.mk $(pwd)/selinux_native/jni/Application.mk
@@ -190,7 +189,7 @@ if [ $? != 0 ]; then
 fi
 
 
-cp $(pwd)/selinux_native/libs/armeabi/selinux5_suidext $(pwd)/bin/local/Android5/
+cp $(pwd)/selinux_native/libs/armeabi/selinux5_suidext $(pwd)/bin/local/
 
 
 rm $(pwd)/selinux_native/jni/Android.mk
