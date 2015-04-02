@@ -1,5 +1,5 @@
-/home/diego/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/pts.o: \
-  /home/diego/core-android-native/selinux_native/jni/utils/pts.c \
+/home/diego/android-dev/asd/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/pts.o: \
+  /home/diego/android-dev/asd/core-android-native/selinux_native/jni/utils/pts.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdlib.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \

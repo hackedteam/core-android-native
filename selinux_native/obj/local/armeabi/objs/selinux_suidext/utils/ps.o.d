@@ -1,5 +1,5 @@
-/home/diego/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/ps.o: \
-  /home/diego/core-android-native/selinux_native/jni/utils/ps.c \
+/home/diego/android-dev/asd/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/ps.o: \
+  /home/diego/android-dev/asd/core-android-native/selinux_native/jni/utils/ps.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/mount.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \
@@ -62,7 +62,8 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/asm-generic/errno-base.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/dirent.h \
   ../../shared/headers/deobfuscate.h ../../shared/headers/utils.h \
-  ../../shared/headers/shell_params.h
+  ../../shared/headers/shell_params.h ../../shared/headers/log.h \
+  /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/mount.h:
 
@@ -191,3 +192,7 @@
 ../../shared/headers/utils.h:
 
 ../../shared/headers/shell_params.h:
+
+../../shared/headers/log.h:
+
+/opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h:

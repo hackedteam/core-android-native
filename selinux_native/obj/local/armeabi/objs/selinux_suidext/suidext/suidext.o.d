@@ -1,5 +1,5 @@
-/home/diego/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/suidext/suidext.o: \
-  /home/diego/core-android-native/selinux_native/jni/suidext/suidext.c \
+/home/diego/android-dev/asd/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/suidext/suidext.o: \
+  /home/diego/android-dev/asd/core-android-native/selinux_native/jni/suidext/suidext.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdio.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \
@@ -102,7 +102,7 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/reboot.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/fb.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/kd.h \
-  /home/diego/core-android-native/selinux_native/jni/suidext/suidext.h \
+  /home/diego/android-dev/asd/core-android-native/selinux_native/jni/suidext/suidext.h \
   ../../shared/headers/log.h ../../shared/headers/shell_params.h \
   ../../shared/headers/deobfuscate.h headers/old_shell.h \
   ../../shared/headers/utils.h headers/boot_manager.h headers/ps.h \
@@ -312,7 +312,7 @@
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/kd.h:
 
-/home/diego/core-android-native/selinux_native/jni/suidext/suidext.h:
+/home/diego/android-dev/asd/core-android-native/selinux_native/jni/suidext/suidext.h:
 
 ../../shared/headers/log.h:
 

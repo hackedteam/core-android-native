@@ -61,6 +61,11 @@ int main(int argc, char **argv) {
   sleep(5);
   if(check_socket(SHELL_PORT) != 0) {
     LOGD("Socket error\n");
+
+    // We need to kill every spawned daemon otherwise at the runner reboot the root daemon
+    // won't start anymore
+    kill_root_daemon();
+    sleep(1);
     exit(0); // If a file descriptor error occurs we have to restart the daemon process
   }
 

