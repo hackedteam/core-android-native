@@ -166,7 +166,6 @@ fi
 
 cp $(pwd)/selinux_native/libs/armeabi/bbmdecoder $(pwd)/bin/local
 
-
 ###################################################
 ############# ANDROID 5 ###########################
 ###################################################
@@ -184,6 +183,19 @@ if [ $? != 0 ]; then
     echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
     error=1
 fi
+
+
+# bbmdecoder 5
+
+cp $(pwd)/selinux_native/jni/Makefiles/bbmdecoder5.mk $(pwd)/selinux_native/jni/Android.mk
+$sdk -B -C $(pwd)/selinux_native/jni/
+if [ $? != 0 ]; then
+    echo -e "\n\n${red}${bold}ERROR: Something wrong during compilation${normal}${NC}\n\n"
+    error=1
+fi
+
+cp $(pwd)/selinux_native/libs/armeabi/bbmdecoder $(pwd)/bin/local/bbmdecoder5
+
 
 
 
