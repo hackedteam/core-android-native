@@ -1,5 +1,5 @@
-/home/diego/android-dev/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/old_shell.o: \
-  /home/diego/android-dev/core-android-native/selinux_native/jni/utils/old_shell.c \
+/home/diego/test_core/updated/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/utils/old_shell.o: \
+  /home/diego/test_core/updated/core-android-native/selinux_native/jni/utils/old_shell.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/errno.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \
