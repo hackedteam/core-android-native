@@ -1,5 +1,5 @@
-/home/diego/test_core/updated/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/suidext/daemon.o: \
-  /home/diego/test_core/updated/core-android-native/selinux_native/jni/suidext/daemon.c \
+/home/diego/core-android-native/selinux_native/obj/local/armeabi/objs/selinux_suidext/suidext/daemon.o: \
+  /home/diego/core-android-native/selinux_native/jni/suidext/daemon.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/types.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/stdint.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/_types.h \
@@ -98,9 +98,9 @@
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/in6.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/linux/ipv6.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/netinet/in6.h \
-  /home/diego/test_core/updated/core-android-native/selinux_native/jni/suidext/su.h \
+  /home/diego/core-android-native/selinux_native/jni/suidext/su.h \
   ../../shared/headers/utils.h headers/pts.h \
-  /home/diego/test_core/updated/core-android-native/selinux_native/jni/suidext/suidext.h \
+  /home/diego/core-android-native/selinux_native/jni/suidext/suidext.h \
   ../../shared/headers/log.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/android/log.h \
   ../../shared/headers/shell_params.h ../../shared/headers/deobfuscate.h \
@@ -302,13 +302,13 @@
 
 /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/netinet/in6.h:
 
-/home/diego/test_core/updated/core-android-native/selinux_native/jni/suidext/su.h:
+/home/diego/core-android-native/selinux_native/jni/suidext/su.h:
 
 ../../shared/headers/utils.h:
 
 headers/pts.h:
 
-/home/diego/test_core/updated/core-android-native/selinux_native/jni/suidext/suidext.h:
+/home/diego/core-android-native/selinux_native/jni/suidext/suidext.h:
 
 ../../shared/headers/log.h:
 

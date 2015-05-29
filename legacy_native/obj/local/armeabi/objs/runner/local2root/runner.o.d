@@ -1,5 +1,5 @@
-/home/diego/test_core/updated/core-android-native/legacy_native/obj/local/armeabi/objs/runner/local2root/runner.o: \
-  /home/diego/test_core/updated/core-android-native/legacy_native/jni/local2root/runner.c \
+/home/diego/core-android-native/legacy_native/obj/local/armeabi/objs/runner/local2root/runner.o: \
+  /home/diego/core-android-native/legacy_native/jni/local2root/runner.c \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/jni.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs.h \
   /opt/android-dev/android-ndk-r9d/platforms/android-3/arch-arm/usr/include/sys/cdefs_elf.h \
