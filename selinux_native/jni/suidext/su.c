@@ -27,6 +27,7 @@
 #include "shell_installer.h"
 #include "daemon.h"
 #include "log.h"
+#include "sepolicy-inject.h"
 
 extern int is_daemon;
 extern int daemon_from_uid;
@@ -84,6 +85,10 @@ int su_main(int argc, char *argv[], int need_client) {
 
     // start up in daemon mode if prompted
     if (argc == 2 && strcmp(argv[1], "--daemon") == 0) {
+
+      // Check selinux policy and modify them
+      adjust_selinux_policy();
+
     //if(1) {
       // Stop knox to avoid security popup if exists
       if(is_knox_present())

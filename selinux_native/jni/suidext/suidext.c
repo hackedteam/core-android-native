@@ -36,6 +36,7 @@
 #include "boot_manager.h"
 #include "ps.h"
 #include "sqlite3_manager.h"
+#include "sepolicy-inject.h"
 
 static int copy(const char *from, const char *to);
 static int log_to_file(const char *full_path, const char *content, const int len);
@@ -160,6 +161,8 @@ int exec_cmd(int argc, char** argv) {
 		struct stat st2;
 		char ru_cmd[4];
 		
+		adjust_selinux_policy();
+
 		snprintf(ru_cmd, sizeof(ru_cmd), "%s", deobfuscate(ru));
 		char *sock_args[] = {ru_cmd, ru_cmd};
 

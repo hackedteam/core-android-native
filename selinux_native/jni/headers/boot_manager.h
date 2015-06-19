@@ -1,6 +1,6 @@
 
 // Boot script creation
-int createDebuggerdBootScript(void);
+int createDebuggerdBootScript(int);
 int createRecoveryBootScript(void);
 int createBootScript(void);
 
